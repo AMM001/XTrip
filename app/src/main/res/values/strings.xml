@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">XTrip</string>
+    <string name="title_activity_home">Home</string>
+    <string name="title_activity_addTrip">New Trip</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">Map</string>
+
+    <!-- Strings in Add trip -->
+    <string name="trip_type_one_direction">One Direction</string>
+    <string name="trip_type_round_trip">Round Trip</string>
 </resources>
