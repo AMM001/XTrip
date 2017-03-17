@@ -57,10 +57,10 @@
         android:text="sign in"/>
 
     <Button
-        android:id="@+id/btnFBLogin"
+        android:id="@+id/btnGLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="sign in with facebook"/>
+        android:text="sign in with Google"/>
 
     <LinearLayout
         android:orientation="horizontal"
