@@ -28,7 +28,33 @@ public class LoginActivity extends AppCompatActivity {
     TextView txtSignup;
 
     private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
     private ProgressDialog mAuthProgressDialog;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d("My_tag", "onAuthStateChanged:signed_in:" + user.getUid());
+                    Intent i = new Intent(getApplicationContext() , MainActivity.class);
+                    startActivity(i);
+                    finish();
+
+                } else {
+                    // User is signed out
+                    Log.d("my_tag", "onAuthStateChanged:signed_out");
+                }
+            }
+        });
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
