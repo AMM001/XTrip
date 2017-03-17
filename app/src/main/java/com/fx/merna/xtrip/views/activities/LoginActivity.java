@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.fx.merna.xtrip.MainActivity;
 import com.fx.merna.xtrip.R;
+import com.fx.merna.xtrip.models.User;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -28,6 +29,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -188,7 +191,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+    private void firebaseAuthWithGoogle(final GoogleSignInAccount acct) {
         Log.d("MY_TAG", "firebaseAuthWithGoogle:" + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -205,6 +208,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             Log.w("MY_TAG", "signInWithCredential", task.getException());
                             Toast.makeText(getApplicationContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                        }else{
+                            User newUser=new User();
+                            newUser.setName(acct.getDisplayName());
+                            newUser.setEmail(acct.getEmail());
+                            newUser.setId(task.getResult().getUser().getUid());
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef = database.getReference("users").child(newUser.getId());
+                            myRef.setValue(newUser);
                         }
                         // ...
                     }
@@ -223,6 +234,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                 GoogleSignInAccount account = result.getSignInAccount();
                 Log.i("MY_TAG","Google Sign In was successful");
+
 
                 firebaseAuthWithGoogle(account);
 
