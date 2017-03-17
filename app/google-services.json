@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "921541305107",
+    "firebase_url": "https://xtrip-52442.firebaseio.com",
+    "project_id": "xtrip-52442",
+    "storage_bucket": "xtrip-52442.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921541305107:android:28f7ae6ae9a608b8",
+        "android_client_info": {
+          "package_name": "com.fx.merna.xtrip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "921541305107-e44u4mehns5bhd3tdlj35qu2b7jhegkn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fx.merna.xtrip",
+            "certificate_hash": "6d24e56d64b8b59616139d1ff59677b1254dd8d8"
+          }
+        },
+        {
+          "client_id": "921541305107-2t8lq3nafj32569up09kliv571qhp0eo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-4vgAYToH_8btE1g3yzVraFrWI2oXZ88"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "921541305107-2t8lq3nafj32569up09kliv571qhp0eo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
