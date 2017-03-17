@@ -17,11 +17,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.fx.merna.xtrip.views.AddTripActivity;
+import com.fx.merna.xtrip.views.activities.AddTripActivity;
 import com.fx.merna.xtrip.views.fragments.HistoryFragment;
 import com.fx.merna.xtrip.views.fragments.HomeFragment;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

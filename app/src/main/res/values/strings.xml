@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">XTrip</string>
     <string name="title_activity_home">Home</string>
-    <string name="title_activity_addTrip">New Trip</string>
+    <string name="title_activity_addTrip">Create Trip</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
@@ -13,4 +13,11 @@
     <!-- Strings in Add trip -->
     <string name="trip_type_one_direction">One Direction</string>
     <string name="trip_type_round_trip">Round Trip</string>
+
+    <!--Strings in Login Activity-->
+    <string name="title_progress_title"> Loading ... </string>
+    <string name="message_progress_title"> Authenicating with firebase ... </string>
+
+    <!--Strings in Sign up Activity-->
+    <string name="signup_message_progress_title"> attempting to create account ... </string>
 </resources>

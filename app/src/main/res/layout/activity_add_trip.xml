@@ -9,14 +9,60 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.fx.merna.xtrip.views.AddTripActivity">
+    tools:context="com.fx.merna.xtrip.views.activities.AddTripActivity">
 
     <EditText
+        android:id="@+id/edtTripName"
         android:hint="Trip name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+
+    <fragment
+    android:id="@+id/startPoint"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+    />
+    <fragment
+        android:id="@+id/endPoint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+        />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/edtDate"
+                android:hint="Enter Date"
+                android:textSize="14dp"
+                android:layout_weight="1"
+                android:editable="false"
+                android:onClick="edtDateAction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/edtTime"
+                android:hint="Enter Time"
+                android:textSize="14dp"
+                android:editable="false"
+                android:layout_weight="1"
+                android:onClick="edtTimeAction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
     <RadioGroup
+        android:id="@+id/rBtnTripType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -30,12 +76,9 @@
             android:text="@string/trip_type_round_trip"/>
     </RadioGroup>
 
-    <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextView"
+    <Button
+        android:id="@+id/btnCreateTrip"
+        android:text="Create Trip"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:text="Please enter your place" >
-
-    </AutoCompleteTextView>
+        android:layout_height="wrap_content" />
 </LinearLayout>

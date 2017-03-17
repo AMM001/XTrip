@@ -16,6 +16,14 @@ public class Trip {
     double distance;
     Date date;
 
+    public Trip(String name, String startPoint, String endPoint, String type) {
+        this.name = name;
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
+        this.type = type;
+        this.date = date;
+    }
+
     public String getName() {
         return name;
     }
