@@ -4,14 +4,14 @@ package com.fx.merna.xtrip.models;
  * Created by Merna on 3/15/17.
  */
 
-public class user {
+public class User {
 
     String id;
     String name;
     String email;
     String password;
 
-    public user(String id, String name, String email, String password) {
+    public User(String id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -19,7 +19,7 @@ public class user {
     }
 
 
-    public user(String email, String password) {
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
     }

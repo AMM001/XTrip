@@ -20,6 +20,8 @@ import android.view.MenuItem;
 import com.fx.merna.xtrip.views.AddTripActivity;
 import com.fx.merna.xtrip.views.fragments.HistoryFragment;
 import com.fx.merna.xtrip.views.fragments.HomeFragment;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
