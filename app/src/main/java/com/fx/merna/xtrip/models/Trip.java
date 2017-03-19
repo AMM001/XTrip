@@ -1,13 +1,15 @@
 package com.fx.merna.xtrip.models;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Merna on 3/15/17.
  */
 
-public class Trip {
+public class Trip implements Serializable {
 
+    private  String id;
     private String name;
     private String startPoint;
     private String endPoint;
@@ -19,13 +21,23 @@ public class Trip {
     public Trip() {
     }
 
-    public Trip(String name, String startPoint, String endPoint, String type) {
+    public Trip(String id,String name, String startPoint, String endPoint, String type) {
+
+        this.id=id;
         this.name = name;
         this.startPoint = startPoint;
         this.endPoint = endPoint;
         this.type = type;
         this.status="upcoming";
         this.date = date;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {

@@ -2,6 +2,8 @@ package com.fx.merna.xtrip.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -14,7 +16,10 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.fx.merna.xtrip.R;
 import com.fx.merna.xtrip.holders.UpcomingViewHolder;
 import com.fx.merna.xtrip.models.Trip;
+import com.fx.merna.xtrip.views.activities.AddTripActivity;
 import com.google.firebase.database.Query;
+
+import java.io.Serializable;
 
 /**
  * Created by Merna on 3/19/17.
@@ -40,7 +45,7 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
     }
 
     @Override
-    protected void populateViewHolder(UpcomingViewHolder viewHolder, Trip model, int position) {
+    protected void populateViewHolder(UpcomingViewHolder viewHolder, final Trip model, int position) {
 
             final UpcomingViewHolder holder=viewHolder;
 
@@ -60,7 +65,21 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
                     //registering popup with OnMenuItemClickListener
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
-                            Toast.makeText(activity,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
+
+                            switch (item.getItemId()){
+
+                                case R.id.updateTripItem:
+                                    Intent intent = new Intent(activity, AddTripActivity.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putSerializable("clickedItem",model);
+                                    intent.putExtras(bundle);
+                                    activity.startActivity(intent);
+
+                                    Toast.makeText(activity,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
+                                    break;
+                                case R.id.deleteTripItem:
+                                    break;
+                            }
                             return true;
                         }
 

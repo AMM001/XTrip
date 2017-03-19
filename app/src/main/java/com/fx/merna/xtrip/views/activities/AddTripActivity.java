@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class AddTripActivity extends AppCompatActivity {
 
@@ -42,11 +43,27 @@ public class AddTripActivity extends AppCompatActivity {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
+        Bundle bandleToEdit = this.getIntent().getExtras();
+
+
         edtTripName = (EditText) findViewById(R.id.edtTripName);
         edtDate = (EditText) findViewById(R.id.edtDate);
         edtTime = (EditText) findViewById(R.id.edtTime);
         btnCreateTrip = (Button) findViewById(R.id.btnCreateTrip);
         rBtnTripType = (RadioGroup) findViewById(R.id.rBtnTripType);
+
+        if(bandleToEdit != null){
+            Trip trip = (Trip) bandleToEdit.getSerializable("clickedItem");
+
+            edtTripName.setText(trip.getName());
+            ((EditText) findViewById(R.id.place_autocomplete_search_input)).setText(trip.getStartPoint());
+
+            PlaceAutocompleteFragment endPointAutocompleteFragment = (PlaceAutocompleteFragment)
+                    getFragmentManager().findFragmentById(R.id.endPoint);
+            ((EditText) endPointAutocompleteFragment.getView()
+                    .findViewById(R.id.place_autocomplete_search_input))
+                    .setText(trip.getEndPoint());
+        }
 
         btnCreateTrip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,13 +74,14 @@ public class AddTripActivity extends AppCompatActivity {
                         .getText().toString();
 
 
-                Trip newTrip = new Trip(name, startPoint, endPoint, type);
+
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 Log.i("whenAdd",user.getUid());
                 // replace userid1 to uuid ..
                 DatabaseReference myRef = database.getReference("trips").child(user.getUid());
-
-                myRef.push().setValue(newTrip);
+                String key =myRef.push().getKey();
+                Trip newTrip = new Trip(key,name, startPoint, endPoint, type);
+                myRef.child(key).setValue(newTrip);
 
             }
         });
@@ -136,6 +154,7 @@ public class AddTripActivity extends AppCompatActivity {
         int mYear = mcurrentDate.get(Calendar.YEAR);
         int mMonth = mcurrentDate.get(Calendar.MONTH);
         int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
+        
 
         DatePickerDialog mDatePicker = new DatePickerDialog(AddTripActivity.this, new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {

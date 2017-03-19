@@ -1,10 +1,12 @@
 package com.fx.merna.xtrip.models;
 
+import java.io.Serializable;
+
 /**
  * Created by Merna on 3/15/17.
  */
 
-public class User {
+public class User implements Serializable{
 
     String id;
     String name;
