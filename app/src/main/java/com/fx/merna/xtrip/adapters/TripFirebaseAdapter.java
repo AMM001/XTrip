@@ -2,6 +2,10 @@ package com.fx.merna.xtrip.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.net.Uri;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -15,6 +19,9 @@ import com.fx.merna.xtrip.R;
 import com.fx.merna.xtrip.holders.UpcomingViewHolder;
 import com.fx.merna.xtrip.models.Trip;
 import com.google.firebase.database.Query;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by Merna on 3/19/17.
@@ -40,7 +47,7 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
     }
 
     @Override
-    protected void populateViewHolder(UpcomingViewHolder viewHolder, Trip model, int position) {
+    protected void populateViewHolder(UpcomingViewHolder viewHolder, final Trip model, int position) {
 
             final UpcomingViewHolder holder=viewHolder;
 
@@ -69,6 +76,27 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
                     popup.show();
                 }
             });
+
+        holder.getStartTrip().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                model.getStartPoint();
+                model.getEndPoint();
+                Geocoder coder = new Geocoder(activity);
+                List<Address> address;
+                try {
+                    address = coder.getFromLocationName(model.getEndPoint(),5);
+                    Address direction=address.get(0);
+                    Uri uri= Uri.parse("google.navigation:q="+direction.getLatitude()+","+direction.getLongitude()+"&mode=d");
+                    Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+                    intent.setPackage("com.google.android.apps.maps");
+                    activity.startActivity(intent);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 
 //    static class MyViewHolder extends RecyclerView.ViewHolder {
