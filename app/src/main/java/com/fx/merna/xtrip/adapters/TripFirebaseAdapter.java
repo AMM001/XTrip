@@ -56,7 +56,7 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
 
             final UpcomingViewHolder holder=viewHolder;
 
-            holder.getTitle().setText(model.getName());
+            holder.getTitle().setText(model.getName().toUpperCase());
             holder.getFrom().setText(model.getStartPoint());
             holder.getTo().setText(model.getEndPoint());
 
