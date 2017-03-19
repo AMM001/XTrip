@@ -2,12 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.fx.merna.xtrip.views.fragments.HistroyMapFragment">
+    tools:context="com.fx.merna.xtrip.views.fragments.TripDetailsFragment">
 
     <!-- TODO: Update blank fragment layout -->
-
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mapView"
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:text="@string/hello_blank_fragment" />
+
 </FrameLayout>
