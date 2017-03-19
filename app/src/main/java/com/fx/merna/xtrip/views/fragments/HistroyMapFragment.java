@@ -1,11 +1,13 @@
 package com.fx.merna.xtrip.views.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +21,19 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 
 public class HistroyMapFragment extends Fragment {
@@ -38,7 +50,7 @@ public class HistroyMapFragment extends Fragment {
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
-         // needed to get the map to display immediately
+        // needed to get the map to display immediately
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -50,31 +62,62 @@ public class HistroyMapFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference tripsList = database.getReference("trips").child(user.getUid());
+                tripsList.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(getContext() != null) {
+                            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                                // TODO: handle the post
 
+                                Geocoder coder = new Geocoder(getContext());
 
-                Geocoder coder = new Geocoder(getContext());
-                List<Address> address;
+                                List<Address> endAddress;
+                                List<Address> startAddress;
+                                try {
+                                    Log.i("test", postSnapshot.child("startPoint").getValue().toString());
+                                    startAddress = coder.getFromLocationName(postSnapshot.child("startPoint").getValue().toString(), 5);
+                                    Address startLocation = startAddress.get(0);
+                                    // For dropping a marker at a point on the Map
+                                    LatLng start = new LatLng(startLocation.getLatitude(), startLocation.getLongitude());
+                                    googleMap.addMarker(new MarkerOptions().position(start).title("Marker Title").snippet("Marker Description"));
 
+                                    // For zooming automatically to the location of the marker
+                                    CameraPosition cameraPosition = new CameraPosition.Builder().target(start).zoom(12).build();
+                                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-                try {
-                    address = coder.getFromLocationName("Sharm El-Sheikh, Qesm Sharm Ash Sheikh, South Sinai Governorate",5);
-                    Address location=address.get(0);
+                                    endAddress = coder.getFromLocationName(postSnapshot.child("endPoint").getValue().toString(), 5);
+                                    Address endLocation = endAddress.get(0);
+                                    // For dropping a marker at a point on the Map
+                                    LatLng end = new LatLng(endLocation.getLatitude(), endLocation.getLongitude());
+                                    googleMap.addMarker(new MarkerOptions().position(end).title("Marker Title").snippet("Marker Description"));
 
+                                    // For zooming automatically to the location of the marker
 
-                    // For dropping a marker at a point on the Map
-                    LatLng sydney = new LatLng(location.getLatitude(), location.getLongitude());
-                    googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
+                                    Random rnd = new Random();
+                                    int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
 
-                    // For zooming automatically to the location of the marker
-                    CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                    mMapView.onResume();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                                    Polyline line = googleMap.addPolyline(new PolylineOptions()
+                                            .add(start, end)
+                                            .width(10)
+                                            .color(color));
+                                    mMapView.onResume();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
 
+                            }
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
+                    }
+                });
 
             }
         });
