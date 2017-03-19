@@ -8,19 +8,23 @@ import java.util.Date;
 
 public class Trip {
 
-    String name;
-    String startPoint;
-    String endPoint;
-    String type;
-    String status;
-    double distance;
-    Date date;
+    private String name;
+    private String startPoint;
+    private String endPoint;
+    private String type;
+    private String status;
+    private double distance;
+    private Date date;
+
+    public Trip() {
+    }
 
     public Trip(String name, String startPoint, String endPoint, String type) {
         this.name = name;
         this.startPoint = startPoint;
         this.endPoint = endPoint;
         this.type = type;
+        this.status="upcoming";
         this.date = date;
     }
 

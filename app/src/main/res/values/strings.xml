@@ -20,4 +20,8 @@
 
     <!--Strings in Sign up Activity-->
     <string name="signup_message_progress_title"> attempting to create account ... </string>
+
+    <!--Strings in menus-->
+    <string name="update_menu">update</string>
+    <string name="delete_menu">delete</string>
 </resources>
