@@ -3,9 +3,14 @@ package com.fx.merna.xtrip.views.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -16,7 +21,6 @@ import android.widget.TimePicker;
 
 import com.fx.merna.xtrip.R;
 import com.fx.merna.xtrip.models.Trip;
-import com.fx.merna.xtrip.utils.Constants;
 import com.fx.merna.xtrip.utils.DateParser;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
@@ -28,29 +32,88 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.text.ParseException;
 import java.util.Calendar;
-import java.util.Date;
+
 
 public class AddTripActivity extends AppCompatActivity {
 
-    EditText edtTripName, edtDate, edtTime;
+    EditText edtTripName, edtDate, edtTime, edtStartPoint, edtEndPoint;
     Button btnCreateTrip;
     RadioGroup rBtnTripType;
+    PlaceAutocompleteFragment endPointAutocompleteFragment, startPointAutocompleteFragment;
     String startPoint = "", endPoint = "", startLong = "", startLat = "", endLong = "", endLat = "";
     Bundle bandleToEdit;
     Trip trip;
+
+    private TextWatcher mTxtWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            Log.i("MY_Tag", "Listener");
+            checkAllFieldsIsEmpty();
+        }
+    };
 
     @Override
     protected void onStart() {
         super.onStart();
         bandleToEdit = this.getIntent().getExtras();
+
         if (bandleToEdit != null) {
             getSupportActionBar().setTitle("Edit Trip");
         } else {
             getSupportActionBar().setTitle("Add Trip");
         }
 
+        checkAllFieldsIsEmpty();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (!checkAnyFieldsIsEmpty()) {
+
+                    AlertDialog.Builder alert = new AlertDialog.Builder(AddTripActivity.this);
+                    alert.setTitle("back");
+
+                    alert.setMessage("when back data in fields will lost" +
+                            ",Are you sure you want to back?");
+                    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            finish();
+                        }
+                    });
+
+                    alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }
+                    );
+                    alert.show();
+                    return true;
+
+                } else {
+                    finish();
+                    return true;
+                }
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -60,26 +123,48 @@ public class AddTripActivity extends AppCompatActivity {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-
-
         edtTripName = (EditText) findViewById(R.id.edtTripName);
+        edtTripName.addTextChangedListener(mTxtWatcher);
         edtDate = (EditText) findViewById(R.id.edtDate);
+        edtDate.addTextChangedListener(mTxtWatcher);
         edtTime = (EditText) findViewById(R.id.edtTime);
+        edtTime.addTextChangedListener(mTxtWatcher);
         btnCreateTrip = (Button) findViewById(R.id.btnCreateTrip);
         rBtnTripType = (RadioGroup) findViewById(R.id.rBtnTripType);
+        rBtnTripType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                checkAllFieldsIsEmpty();
+            }
+        });
+        startPointAutocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.startPoint);
+        edtStartPoint = ((EditText) startPointAutocompleteFragment.getView()
+                .findViewById(R.id.place_autocomplete_search_input));
+        edtStartPoint.addTextChangedListener(mTxtWatcher);
 
+        endPointAutocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.endPoint);
+        edtEndPoint = ((EditText) endPointAutocompleteFragment.getView()
+                .findViewById(R.id.place_autocomplete_search_input));
+        edtEndPoint.addTextChangedListener(mTxtWatcher);
+
+        bandleToEdit = this.getIntent().getExtras();
         if (bandleToEdit != null) {
+
             trip = (Trip) bandleToEdit.getSerializable("clickedItem");
 
             edtTripName.setText(trip.getName());
 
-            ((EditText) findViewById(R.id.place_autocomplete_search_input)).setText(trip.getStartPoint());
+            edtStartPoint.setText(trip.getStartPoint());
+            startPoint = trip.getStartPoint();
+            startLong = trip.getStartLong();
+            startLat = trip.getStartLat();
 
-            PlaceAutocompleteFragment endPointAutocompleteFragment = (PlaceAutocompleteFragment)
-                    getFragmentManager().findFragmentById(R.id.endPoint);
-            ((EditText) endPointAutocompleteFragment.getView()
-                    .findViewById(R.id.place_autocomplete_search_input))
-                    .setText(trip.getEndPoint());
+            edtEndPoint.setText(trip.getEndPoint());
+            endPoint = trip.getEndPoint();
+            endLong = trip.getEndLong();
+            endLat = trip.getEndLat();
 
             String[] arrDate = DateParser.parseLongDateToStrings(trip.getDate());
             edtDate.setText(arrDate[0]);
@@ -88,39 +173,34 @@ public class AddTripActivity extends AppCompatActivity {
             RadioButton checked = (RadioButton) findViewById(Integer.parseInt(trip.getType()));
             checked.setChecked(true);
 
-
         }
 
         btnCreateTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-
                 String name = edtTripName.getText().toString();
                 String type = String.valueOf(rBtnTripType.getCheckedRadioButtonId());
-
 
                 String dateTime = ((EditText) findViewById(R.id.edtDate)).getText().toString() +
                         " " + ((EditText) findViewById(R.id.edtTime)).getText().toString();
 
-
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 DatabaseReference myRef = database.getReference("trips").child(user.getUid());
+                Trip newTrip;
 
                 if (bandleToEdit != null) {
-
-
-                    myRef.child(trip.getId()).setValue(trip);
+                    newTrip = new Trip(trip.getType(), name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, DateParser.parseStringDateToLong(dateTime));
+                    myRef.child(trip.getId()).setValue(newTrip);
 
                 } else {
                     String key = myRef.push().getKey();
-                    Trip newTrip = new Trip(key, name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, DateParser.parseStringDateToLong(dateTime));
+                    newTrip = new Trip(key, name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, DateParser.parseStringDateToLong(dateTime));
                     myRef.child(key).setValue(newTrip);
                 }
 
             }
         });
-
 
         handlePlaceSelection();
 
@@ -129,11 +209,9 @@ public class AddTripActivity extends AppCompatActivity {
     public void handlePlaceSelection() {
 
         // --------------- start point handling ---------------
-        PlaceAutocompleteFragment startPointAutocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.startPoint);
 
         startPointAutocompleteFragment.setHint("Enter start Point");
-        ((EditText) startPointAutocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input)).setTextSize(14);
+        edtStartPoint.setTextSize(14);
 
         AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
                 .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
@@ -162,11 +240,8 @@ public class AddTripActivity extends AppCompatActivity {
 
         // --------------- end point handling ---------------
 
-        PlaceAutocompleteFragment endPointAutocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.endPoint);
-
-        endPointAutocompleteFragment.setHint("Enter end Point");
-        ((EditText) endPointAutocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input)).setTextSize(14);
+        edtEndPoint.setHint("Enter end Point");
+        edtEndPoint.setTextSize(14);
 
         endPointAutocompleteFragment.setFilter(typeFilter);
 
@@ -226,6 +301,62 @@ public class AddTripActivity extends AppCompatActivity {
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();
+
+    }
+
+    public void checkAllFieldsIsEmpty() {
+
+        boolean name = edtTripName.getText().toString().trim().isEmpty();
+        boolean date = edtDate.getText().toString().trim().isEmpty();
+        boolean time = edtTime.getText().toString().trim().isEmpty();
+        boolean type;
+
+        if (rBtnTripType.getCheckedRadioButtonId() == -1)
+            type = true;
+        else
+            type = false;
+
+        boolean startPoint = ((EditText) findViewById(R.id.place_autocomplete_search_input))
+                .getText().toString().trim().isEmpty();
+        boolean endPoint = ((EditText) endPointAutocompleteFragment.getView()
+                .findViewById(R.id.place_autocomplete_search_input))
+                .getText().toString().trim().isEmpty();
+        Log.i("MY_Tag", "Before" + name + date + time + type + startPoint + endPoint);
+        if (name || date || time || type || startPoint || endPoint) {
+            Log.i("MY_Tag", "in True");
+            btnCreateTrip.setEnabled(false);
+        } else {
+            Log.i("MY_Tag", "in false");
+            btnCreateTrip.setEnabled(true);
+        }
+
+    }
+
+    public Boolean checkAnyFieldsIsEmpty() {
+
+        boolean name = edtTripName.getText().toString().trim().isEmpty();
+        boolean date = edtDate.getText().toString().trim().isEmpty();
+        boolean time = edtTime.getText().toString().trim().isEmpty();
+        boolean type;
+
+        if (rBtnTripType.getCheckedRadioButtonId() == -1)
+            type = true;
+        else
+            type = false;
+
+        boolean startPoint = ((EditText) findViewById(R.id.place_autocomplete_search_input))
+                .getText().toString().trim().isEmpty();
+        boolean endPoint = ((EditText) endPointAutocompleteFragment.getView()
+                .findViewById(R.id.place_autocomplete_search_input))
+                .getText().toString().trim().isEmpty();
+        Log.i("MY_Tag", "Before" + name + date + time + type + startPoint + endPoint);
+        if (name && date && time && type && startPoint && endPoint) {
+            Log.i("MY_Tag", "in True");
+            return true;
+        } else {
+            Log.i("MY_Tag", "in false");
+            return false;
+        }
 
     }
 
