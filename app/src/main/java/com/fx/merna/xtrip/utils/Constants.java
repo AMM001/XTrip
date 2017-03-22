@@ -1,8 +1,11 @@
 package com.fx.merna.xtrip.utils;
 
+import java.text.SimpleDateFormat;
+
 /**
  * Created by Merna on 3/17/17.
  */
 
 public class Constants {
+    public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("d-M-yyyy hh:mm");
 }

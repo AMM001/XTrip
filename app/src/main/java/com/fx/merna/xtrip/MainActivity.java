@@ -18,8 +18,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.fx.merna.xtrip.views.activities.AddTripActivity;
+import com.fx.merna.xtrip.views.activities.LoginActivity;
 import com.fx.merna.xtrip.views.fragments.HistoryFragment;
 import com.fx.merna.xtrip.views.fragments.HomeFragment;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -104,6 +106,9 @@ public class MainActivity extends AppCompatActivity
 
         } else if (item.getItemId() == R.id.nav_logout) {
 
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
         }
         if(fragment != null){
             Log.i("here_tag","created");

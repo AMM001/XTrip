@@ -6,6 +6,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,8 +43,23 @@ public class HistroyMapFragment extends Fragment {
     private GoogleMap googleMap;
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i("Tag", "onCreateView");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i("Tag", "onStart");
+
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i("Tag", "onCreateView");
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_histroy_map, container, false);
 
@@ -68,46 +84,43 @@ public class HistroyMapFragment extends Fragment {
                 tripsList.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(getContext() != null) {
-                            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        if (getContext() != null) {
+                            for (DataSnapshot tripsnSnapshot : dataSnapshot.getChildren()) {
                                 // TODO: handle the post
 
-                                Geocoder coder = new Geocoder(getContext());
+                                //Geocoder coder = new Geocoder(getContext());
 
                                 List<Address> endAddress;
                                 List<Address> startAddress;
-                                try {
-                                    Log.i("test", postSnapshot.child("startPoint").getValue().toString());
-                                    startAddress = coder.getFromLocationName(postSnapshot.child("startPoint").getValue().toString(), 5);
-                                    Address startLocation = startAddress.get(0);
-                                    // For dropping a marker at a point on the Map
-                                    LatLng start = new LatLng(startLocation.getLatitude(), startLocation.getLongitude());
-                                    googleMap.addMarker(new MarkerOptions().position(start).title("Marker Title").snippet("Marker Description"));
 
-                                    // For zooming automatically to the location of the marker
-                                    CameraPosition cameraPosition = new CameraPosition.Builder().target(start).zoom(12).build();
-                                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                                // For dropping a marker at a point on the Map
+                                LatLng start = new LatLng(Double.parseDouble(tripsnSnapshot.child("startLong").getValue().toString())
+                                        , Double.parseDouble(tripsnSnapshot.child("startLat").getValue().toString()));
 
-                                    endAddress = coder.getFromLocationName(postSnapshot.child("endPoint").getValue().toString(), 5);
-                                    Address endLocation = endAddress.get(0);
-                                    // For dropping a marker at a point on the Map
-                                    LatLng end = new LatLng(endLocation.getLatitude(), endLocation.getLongitude());
-                                    googleMap.addMarker(new MarkerOptions().position(end).title("Marker Title").snippet("Marker Description"));
+                                googleMap.addMarker(new MarkerOptions().position(start).title("Marker Title").snippet("Marker Description"));
 
-                                    // For zooming automatically to the location of the marker
+                                // For zooming automatically to the location of the marker
+                                CameraPosition cameraPosition = new CameraPosition.Builder().target(start).zoom(12).build();
+                                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-                                    Random rnd = new Random();
-                                    int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+                                // For dropping a marker at a point on the Map
+                                LatLng end = new LatLng(Double.parseDouble(tripsnSnapshot.child("endLong").getValue().toString())
+                                        , Double.parseDouble(tripsnSnapshot.child("endLat").getValue().toString()));
 
-                                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                                    Polyline line = googleMap.addPolyline(new PolylineOptions()
-                                            .add(start, end)
-                                            .width(10)
-                                            .color(color));
-                                    mMapView.onResume();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                                googleMap.addMarker(new MarkerOptions().position(end).title("Marker Title").snippet("Marker Description"));
+
+                                // For zooming automatically to the location of the marker
+
+                                Random rnd = new Random();
+                                int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+
+                                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                                Polyline line = googleMap.addPolyline(new PolylineOptions()
+                                        .add(start, end)
+                                        .width(10)
+                                        .color(color));
+                                mMapView.onResume();
+
 
                             }
                         }

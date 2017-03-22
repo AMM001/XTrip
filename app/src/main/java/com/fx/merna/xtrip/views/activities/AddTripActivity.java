@@ -16,6 +16,8 @@ import android.widget.TimePicker;
 
 import com.fx.merna.xtrip.R;
 import com.fx.merna.xtrip.models.Trip;
+import com.fx.merna.xtrip.utils.Constants;
+import com.fx.merna.xtrip.utils.DateParser;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
@@ -26,6 +28,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -34,7 +37,21 @@ public class AddTripActivity extends AppCompatActivity {
     EditText edtTripName, edtDate, edtTime;
     Button btnCreateTrip;
     RadioGroup rBtnTripType;
-    String startPoint = "", endPoint = "";
+    String startPoint = "", endPoint = "", startLong = "", startLat = "", endLong = "", endLat = "";
+    Bundle bandleToEdit;
+    Trip trip;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        bandleToEdit = this.getIntent().getExtras();
+        if (bandleToEdit != null) {
+            getSupportActionBar().setTitle("Edit Trip");
+        } else {
+            getSupportActionBar().setTitle("Add Trip");
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +60,6 @@ public class AddTripActivity extends AppCompatActivity {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        Bundle bandleToEdit = this.getIntent().getExtras();
 
 
         edtTripName = (EditText) findViewById(R.id.edtTripName);
@@ -52,10 +68,11 @@ public class AddTripActivity extends AppCompatActivity {
         btnCreateTrip = (Button) findViewById(R.id.btnCreateTrip);
         rBtnTripType = (RadioGroup) findViewById(R.id.rBtnTripType);
 
-        if(bandleToEdit != null){
-            Trip trip = (Trip) bandleToEdit.getSerializable("clickedItem");
+        if (bandleToEdit != null) {
+            trip = (Trip) bandleToEdit.getSerializable("clickedItem");
 
             edtTripName.setText(trip.getName());
+
             ((EditText) findViewById(R.id.place_autocomplete_search_input)).setText(trip.getStartPoint());
 
             PlaceAutocompleteFragment endPointAutocompleteFragment = (PlaceAutocompleteFragment)
@@ -63,25 +80,43 @@ public class AddTripActivity extends AppCompatActivity {
             ((EditText) endPointAutocompleteFragment.getView()
                     .findViewById(R.id.place_autocomplete_search_input))
                     .setText(trip.getEndPoint());
+
+            String[] arrDate = DateParser.parseLongDateToStrings(trip.getDate());
+            edtDate.setText(arrDate[0]);
+            edtTime.setText(arrDate[1]);
+
+            RadioButton checked = (RadioButton) findViewById(Integer.parseInt(trip.getType()));
+            checked.setChecked(true);
+
+
         }
 
         btnCreateTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String name = edtTripName.getText().toString();
-                String type = ((RadioButton) findViewById(rBtnTripType.getCheckedRadioButtonId()))
-                        .getText().toString();
 
+                String name = edtTripName.getText().toString();
+                String type = String.valueOf(rBtnTripType.getCheckedRadioButtonId());
+
+
+                String dateTime = ((EditText) findViewById(R.id.edtDate)).getText().toString() +
+                        " " + ((EditText) findViewById(R.id.edtTime)).getText().toString();
 
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                Log.i("whenAdd",user.getUid());
-                // replace userid1 to uuid ..
                 DatabaseReference myRef = database.getReference("trips").child(user.getUid());
-                String key =myRef.push().getKey();
-                Trip newTrip = new Trip(key,name, startPoint, endPoint, type);
-                myRef.child(key).setValue(newTrip);
+
+                if (bandleToEdit != null) {
+
+
+                    myRef.child(trip.getId()).setValue(trip);
+
+                } else {
+                    String key = myRef.push().getKey();
+                    Trip newTrip = new Trip(key, name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, DateParser.parseStringDateToLong(dateTime));
+                    myRef.child(key).setValue(newTrip);
+                }
 
             }
         });
@@ -111,6 +146,11 @@ public class AddTripActivity extends AppCompatActivity {
                 // TODO: Get info about the selected place.
                 startPoint = place.getAddress().toString();
                 Log.i("place_tag", "Place: " + place.getName());
+                Log.i("place_tag", "Place: " + place.getLatLng().longitude);
+                Log.i("place_tag", "Place: " + place.getLatLng().latitude);
+
+                startLong = String.valueOf(place.getLatLng().longitude);
+                startLat = String.valueOf(place.getLatLng().latitude);
             }
 
             @Override
@@ -136,6 +176,8 @@ public class AddTripActivity extends AppCompatActivity {
                 // TODO: Get info about the selected place.
                 endPoint = place.getAddress().toString();
                 Log.i("place_tag", "Place: " + place.getName());
+                endLong = String.valueOf(place.getLatLng().longitude);
+                endLat = String.valueOf(place.getLatLng().latitude);
             }
 
             @Override
@@ -158,9 +200,10 @@ public class AddTripActivity extends AppCompatActivity {
 
         DatePickerDialog mDatePicker = new DatePickerDialog(AddTripActivity.this, new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
-                edtDate.setText(selectedday + "/" + selectedmonth + "/" + selectedyear);
+                edtDate.setText(selectedday + "-" + selectedmonth + "-" + selectedyear);
             }
         }, mYear, mMonth, mDay);
+
         mDatePicker.setTitle("Select date");
         mDatePicker.show();
     }
@@ -171,7 +214,7 @@ public class AddTripActivity extends AppCompatActivity {
         int mHour = c.get(Calendar.HOUR_OF_DAY);
         int mMinute = c.get(Calendar.MINUTE);
 
-        // Launch Time Picker Dialog
+
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                 new TimePickerDialog.OnTimeSetListener() {
 

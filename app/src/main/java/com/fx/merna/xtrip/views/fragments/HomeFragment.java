@@ -42,9 +42,9 @@ public class HomeFragment extends Fragment {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference tripsList = database.getReference("trips").child(user.getUid());
-        //Query query = tripsList.orderByChild("status").equalTo("upcoming");
+        Query query = tripsList.orderByChild("status").equalTo("upcoming");
 
-        mTripFirebaseAdapter = new TripFirebaseAdapter(getActivity(),Trip.class,R.layout.trip_row, UpcomingViewHolder.class,tripsList);
+        mTripFirebaseAdapter = new TripFirebaseAdapter(getActivity(), Trip.class, R.layout.trip_row, UpcomingViewHolder.class, query);
         tripRecyclerview.setLayoutManager(linearLayoutManager);
 
         //this line of code to add line divider between items  in recycle view ..
