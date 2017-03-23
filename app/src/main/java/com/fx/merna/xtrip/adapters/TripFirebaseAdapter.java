@@ -1,19 +1,14 @@
 package com.fx.merna.xtrip.adapters;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -21,12 +16,11 @@ import com.fx.merna.xtrip.R;
 import com.fx.merna.xtrip.holders.UpcomingViewHolder;
 import com.fx.merna.xtrip.models.Trip;
 import com.fx.merna.xtrip.views.activities.AddTripActivity;
+import com.fx.merna.xtrip.views.activities.ViewDetailsActivity;
 import com.google.firebase.database.Query;
 
 import java.io.IOException;
 import java.util.List;
-
-import java.io.Serializable;
 
 /**
  * Created by Merna on 3/19/17.
@@ -114,6 +108,20 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
                     e.printStackTrace();
                 }
 
+            }
+        });
+
+        //View Details
+        holder.getViewDetails().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(activity, ViewDetailsActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("tripDetails",model);
+                intent.putExtras(bundle);
+                activity.startActivity(intent);
+                Toast.makeText(activity,"You Clicked : Details View" ,Toast.LENGTH_LONG).show();
+                System.out.println("Details Act/////////////////////////////////////");
             }
         });
     }

@@ -45,7 +45,6 @@ public class AddTripActivity extends AppCompatActivity {
 
         Bundle bandleToEdit = this.getIntent().getExtras();
 
-
         edtTripName = (EditText) findViewById(R.id.edtTripName);
         edtDate = (EditText) findViewById(R.id.edtDate);
         edtTime = (EditText) findViewById(R.id.edtTime);

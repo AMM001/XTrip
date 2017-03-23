@@ -5,7 +5,7 @@
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality. 
+         location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -16,8 +16,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_home"
@@ -29,24 +27,27 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <activity android:name=".views.activities.ViewDetailsActivity"></activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-        <activity android:name=".views.activities.SplashActivity"
+
+        <activity
+            android:name=".views.activities.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".views.activities.LoginActivity">
-        </activity>
+        <activity android:name=".views.activities.LoginActivity" />
         <activity android:name=".views.activities.signupActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".views.activities.LoginActivity" />
         </activity>
-
     </application>
 
 </manifest>
