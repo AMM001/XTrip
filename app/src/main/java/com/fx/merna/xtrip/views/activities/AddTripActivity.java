@@ -190,7 +190,7 @@ public class AddTripActivity extends AppCompatActivity {
                 Trip newTrip;
 
                 if (bandleToEdit != null) {
-                    newTrip = new Trip(trip.getType(), name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, DateParser.parseStringDateToLong(dateTime));
+                    newTrip = new Trip(trip.getId(), name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, DateParser.parseStringDateToLong(dateTime));
                     myRef.child(trip.getId()).setValue(newTrip);
 
                 } else {

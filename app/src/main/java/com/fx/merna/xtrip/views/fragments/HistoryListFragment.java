@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 public class HistoryListFragment extends Fragment {
 
@@ -32,7 +33,7 @@ public class HistoryListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root =inflater.inflate(R.layout.fragment_home, container, false);
+        View root =inflater.inflate(R.layout.fragment_history_list, container, false);
         tripRecyclerview= (RecyclerView) root.findViewById(R.id.recycler_view);
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -42,8 +43,9 @@ public class HistoryListFragment extends Fragment {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference tripsList = database.getReference("trips").child(user.getUid());
+        Query query = tripsList.orderByChild("status").equalTo("Done");
 
-        mTripFirebaseAdapter = new TripHistoryFirebaseAdapter(getActivity(),Trip.class,R.layout.trip_row_history, HistoryViewHolder.class,tripsList);
+        mTripFirebaseAdapter = new TripHistoryFirebaseAdapter(getActivity(),Trip.class,R.layout.trip_row_history, HistoryViewHolder.class,query);
         tripRecyclerview.setLayoutManager(linearLayoutManager);
 
         //this line of code to add line divider between items  in recycle view ..

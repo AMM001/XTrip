@@ -38,26 +38,9 @@
             </LinearLayout>
 
         <TextView android:layout_width="wrap_content"
-            android:text="Upcoming"
-            android:id="@+id/upcomingView"
+            android:id="@+id/statusView"
             android:layout_marginLeft="15dp"
             android:layout_height="wrap_content" />
-
-        <TextView android:layout_width="wrap_content"
-            android:text="Done"
-            android:id="@+id/doneView"
-            android:layout_marginLeft="15dp"
-            android:layout_weight="0.84"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"/>
-
-        <TextView android:layout_width="wrap_content"
-            android:text="Cancel"
-            android:id="@+id/cancelView"
-            android:layout_marginLeft="15dp"
-            android:layout_weight="0.84"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"/>
 
         <LinearLayout
             android:layout_height="wrap_content"
