@@ -46,6 +46,7 @@ public class HistoryFragment extends Fragment {
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
         viewPagerAdapter.addFragment(new HistoryListFragment(),"HistoryList");
+        Log.i("Tag", "IN_HISTORY_FRAGMENT between add list and map");
         viewPagerAdapter.addFragment(new HistroyMapFragment(),"HistoryMap");
         viewPager.setAdapter(viewPagerAdapter);
 

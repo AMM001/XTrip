@@ -12,21 +12,29 @@ public class Trip implements Serializable {
     private  String id;
     private String name;
     private String startPoint;
+    private String startLong;
+    private String startLat;
+    private String endLong;
+    private String endLat;
     private String endPoint;
     private String type;
     private String status;
     private double distance;
-    private Date date;
+    private Long date;
 
     public Trip() {
     }
 
-    public Trip(String id,String name, String startPoint, String endPoint, String type) {
+    public Trip(String id, String name, String startPoint, String sLong, String sLat, String endPoint, String eLong, String eLat, String type, Long date) {
 
         this.id=id;
         this.name = name;
         this.startPoint = startPoint;
+        this.startLong = sLong;
+        this.startLat = sLat;
         this.endPoint = endPoint;
+        this.endLong = eLong;
+        this.endLat = eLat;
         this.type = type;
         this.status="upcoming";
         this.date = date;
@@ -88,11 +96,43 @@ public class Trip implements Serializable {
         this.distance = distance;
     }
 
-    public Date getDate() {
+    public Long getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(Long date) {
         this.date = date;
+    }
+
+    public String getStartLong() {
+        return startLong;
+    }
+
+    public void setStartLong(String startLong) {
+        this.startLong = startLong;
+    }
+
+    public String getStartLat() {
+        return startLat;
+    }
+
+    public void setStartLat(String startLat) {
+        this.startLat = startLat;
+    }
+
+    public String getEndLong() {
+        return endLong;
+    }
+
+    public void setEndLong(String endLong) {
+        this.endLong = endLong;
+    }
+
+    public String getEndLat() {
+        return endLat;
+    }
+
+    public void setEndLat(String endLat) {
+        this.endLat = endLat;
     }
 }

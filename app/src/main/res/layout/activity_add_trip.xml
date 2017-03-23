@@ -67,10 +67,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <RadioButton
+            android:id="@+id/oneDirctionType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/trip_type_one_direction"/>
         <RadioButton
+            android:id="@+id/roundTripType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/trip_type_round_trip"/>
@@ -78,7 +80,7 @@
 
     <Button
         android:id="@+id/btnCreateTrip"
-        android:text="Create Trip"
+        android:text="Done"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>
