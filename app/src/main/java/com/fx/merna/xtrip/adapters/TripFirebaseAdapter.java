@@ -16,6 +16,7 @@ import com.fx.merna.xtrip.R;
 import com.fx.merna.xtrip.holders.UpcomingViewHolder;
 import com.fx.merna.xtrip.models.Trip;
 import com.fx.merna.xtrip.utils.Alarm;
+import com.fx.merna.xtrip.utils.Constants;
 import com.fx.merna.xtrip.utils.DateParser;
 import com.fx.merna.xtrip.utils.SHA;
 import com.fx.merna.xtrip.views.activities.AddTripActivity;
@@ -127,6 +128,11 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
             @Override
             public void onClick(View v) {
 
+                //--------------- round trip code -------------
+                if (model.getType().equals(Constants.roundTrip)) {
+
+
+                }
                 //----------- change status to Done in DB  when start trip ----------
                 DatabaseReference myRef = database.getReference("trips").child(user.getUid())
                         .child(model.getId()).child("status");
