@@ -33,7 +33,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-        <activity android:name=".views.activities.SplashActivity"
+
+        <activity
+            android:name=".views.activities.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,7 +51,7 @@
 
         <activity
             android:name=".views.activities.ReminderActivity"
-            android:theme="@android:style/Theme.Holo.Dialog"></activity>
+            android:theme="@style/AppTheme.Dialog"></activity>
 
         <receiver android:name=".utils.AlarmBroadcastReceiver"></receiver>
     </application>

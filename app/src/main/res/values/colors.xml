@@ -5,5 +5,5 @@
     <color name="colorAccent">#009688</color>
     <color name="colorX">#E65100</color>
     <color name="date">#000000</color>
-
+    <color name="title_history">#616161</color>
 </resources>

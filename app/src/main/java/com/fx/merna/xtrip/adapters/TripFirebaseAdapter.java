@@ -15,7 +15,9 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.fx.merna.xtrip.R;
 import com.fx.merna.xtrip.holders.UpcomingViewHolder;
 import com.fx.merna.xtrip.models.Trip;
+import com.fx.merna.xtrip.utils.Alarm;
 import com.fx.merna.xtrip.utils.DateParser;
+import com.fx.merna.xtrip.utils.SHA;
 import com.fx.merna.xtrip.views.activities.AddTripActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -86,9 +88,16 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
                                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+
+                                        //------- delete trip from DB ---------
                                         DatabaseReference myRef = database.getReference("trips").child(user.getUid())
                                                 .child(model.getId());
                                         myRef.removeValue();
+
+                                        //-------- cancel alarm for this trip
+                                        Alarm.cancelAlarm(activity.getApplicationContext(), SHA.getIntegerID(model.getId()));
+
+
                                     }
                                 });
 
@@ -133,12 +142,12 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
         holder.getViewDetails().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(activity, ViewDetailsActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putSerializable("tripDetails",model);
+                Intent intent = new Intent(activity, ViewDetailsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("tripDetails", model);
                 intent.putExtras(bundle);
                 activity.startActivity(intent);
-                Toast.makeText(activity,"You Clicked : Details View" ,Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, "You Clicked : Details View", Toast.LENGTH_LONG).show();
                 System.out.println("Details Act/////////////////////////////////////");
             }
         });

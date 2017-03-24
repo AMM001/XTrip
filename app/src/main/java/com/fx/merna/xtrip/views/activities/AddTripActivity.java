@@ -25,8 +25,11 @@ import android.widget.Toast;
 
 import com.fx.merna.xtrip.R;
 import com.fx.merna.xtrip.models.Trip;
+import com.fx.merna.xtrip.utils.Alarm;
 import com.fx.merna.xtrip.utils.AlarmBroadcastReceiver;
+import com.fx.merna.xtrip.utils.Constants;
 import com.fx.merna.xtrip.utils.DateParser;
+import com.fx.merna.xtrip.utils.SHA;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
@@ -205,7 +208,7 @@ public class AddTripActivity extends AppCompatActivity {
                 }
 
                 //Create new or update PendingIntent and add it to the AlarmManager
-                setAlarm(newTrip);
+                Alarm.setAlarm(getApplicationContext(), newTrip, calendar.getTimeInMillis());
 
             }
         });
@@ -375,24 +378,5 @@ public class AddTripActivity extends AppCompatActivity {
         }
 
     }
-
-    public void setAlarm(Trip trip) {
-
-        try {
-
-            int alarmId = Integer.parseInt(trip.getId());
-            Intent intent = new Intent(this, AlarmBroadcastReceiver.class);
-            PendingIntent pendingIntent = PendingIntent
-                    .getBroadcast(getApplicationContext(), alarmId, intent, 0);
-            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            Toast.makeText(this, "Alarm set in " + trip.getDate(), Toast.LENGTH_LONG).show();
-
-        } catch (NumberFormatException ex) {
-            ex.printStackTrace();
-        }
-
-
-    }
-
+    
 }
