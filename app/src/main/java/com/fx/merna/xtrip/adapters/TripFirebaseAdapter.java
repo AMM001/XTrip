@@ -21,7 +21,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.fx.merna.xtrip.views.activities.ViewDetailsActivity;
 import com.google.firebase.database.Query;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by Merna on 3/19/17.
@@ -124,6 +128,21 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
                 activity.startActivity(intent);
             }
         });
+
+        //View Details
+        holder.getViewDetails().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(activity, ViewDetailsActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("tripDetails",model);
+                intent.putExtras(bundle);
+                activity.startActivity(intent);
+                Toast.makeText(activity,"You Clicked : Details View" ,Toast.LENGTH_LONG).show();
+                System.out.println("Details Act/////////////////////////////////////");
+            }
+        });
     }
+
 
 }
