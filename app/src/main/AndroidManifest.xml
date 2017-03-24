@@ -12,12 +12,10 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/xpath_appicon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_home"
@@ -29,24 +27,32 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-        <activity android:name=".views.activities.SplashActivity"
+
+        <activity
+            android:name=".views.activities.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".views.activities.LoginActivity">
-        </activity>
+        <activity android:name=".views.activities.LoginActivity"></activity>
         <activity android:name=".views.activities.signupActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".views.activities.LoginActivity" />
         </activity>
 
+        <activity
+            android:name=".views.activities.ReminderDialogActivity"
+            android:theme="@android:style/Theme.Holo.Dialog"></activity>
+
+        <receiver android:name=".utils.AlarmBroadcastReceiver"></receiver>
     </application>
 
 </manifest>

@@ -1,9 +1,12 @@
 package com.fx.merna.xtrip.views.activities;
 
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,9 +21,11 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.fx.merna.xtrip.R;
 import com.fx.merna.xtrip.models.Trip;
+import com.fx.merna.xtrip.utils.AlarmBroadcastReceiver;
 import com.fx.merna.xtrip.utils.DateParser;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
@@ -44,7 +49,7 @@ public class AddTripActivity extends AppCompatActivity {
     String startPoint = "", endPoint = "", startLong = "", startLat = "", endLong = "", endLat = "";
     Bundle bandleToEdit;
     Trip trip;
-
+    Calendar calendar = Calendar.getInstance();
     private TextWatcher mTxtWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -182,22 +187,25 @@ public class AddTripActivity extends AppCompatActivity {
                 String name = edtTripName.getText().toString();
                 String type = String.valueOf(rBtnTripType.getCheckedRadioButtonId());
 
-                String dateTime = ((EditText) findViewById(R.id.edtDate)).getText().toString() +
-                        " " + ((EditText) findViewById(R.id.edtTime)).getText().toString();
+//                String dateTime = ((EditText) findViewById(R.id.edtDate)).getText().toString() +
+//                        " " + ((EditText) findViewById(R.id.edtTime)).getText().toString();
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 DatabaseReference myRef = database.getReference("trips").child(user.getUid());
                 Trip newTrip;
 
                 if (bandleToEdit != null) {
-                    newTrip = new Trip(trip.getType(), name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, DateParser.parseStringDateToLong(dateTime));
+                    newTrip = new Trip(trip.getId(), name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, calendar.getTimeInMillis());
                     myRef.child(trip.getId()).setValue(newTrip);
 
                 } else {
                     String key = myRef.push().getKey();
-                    newTrip = new Trip(key, name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, DateParser.parseStringDateToLong(dateTime));
+                    newTrip = new Trip(key, name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, calendar.getTimeInMillis());
                     myRef.child(key).setValue(newTrip);
                 }
+
+                //Create new or update PendingIntent and add it to the AlarmManager
+                setAlarm(newTrip);
 
             }
         });
@@ -266,7 +274,7 @@ public class AddTripActivity extends AppCompatActivity {
 
     public void edtDateAction(View v) {
 
-        Calendar mcurrentDate = Calendar.getInstance();
+        final Calendar mcurrentDate = Calendar.getInstance();
 
         int mYear = mcurrentDate.get(Calendar.YEAR);
         int mMonth = mcurrentDate.get(Calendar.MONTH);
@@ -275,6 +283,11 @@ public class AddTripActivity extends AppCompatActivity {
 
         DatePickerDialog mDatePicker = new DatePickerDialog(AddTripActivity.this, new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+
+                calendar.set(Calendar.YEAR, selectedyear);
+                calendar.set(Calendar.MONTH, selectedmonth);
+                calendar.set(Calendar.DAY_OF_MONTH, selectedday);
+
                 edtDate.setText(selectedday + "-" + selectedmonth + "-" + selectedyear);
             }
         }, mYear, mMonth, mDay);
@@ -296,6 +309,9 @@ public class AddTripActivity extends AppCompatActivity {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay,
                                           int minute) {
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        calendar.set(Calendar.MINUTE, minute);
+                        calendar.set(Calendar.SECOND, 00);
 
                         edtTime.setText(hourOfDay + ":" + minute);
                     }
@@ -357,6 +373,25 @@ public class AddTripActivity extends AppCompatActivity {
             Log.i("MY_Tag", "in false");
             return false;
         }
+
+    }
+
+    public void setAlarm(Trip trip) {
+
+        try {
+
+            int alarmId = Integer.parseInt(trip.getId());
+            Intent intent = new Intent(this, AlarmBroadcastReceiver.class);
+            PendingIntent pendingIntent = PendingIntent
+                    .getBroadcast(getApplicationContext(), alarmId, intent, 0);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            Toast.makeText(this, "Alarm set in " + trip.getDate(), Toast.LENGTH_LONG).show();
+
+        } catch (NumberFormatException ex) {
+            ex.printStackTrace();
+        }
+
 
     }
 
