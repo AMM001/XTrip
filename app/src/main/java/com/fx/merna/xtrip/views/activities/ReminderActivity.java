@@ -8,7 +8,7 @@ import android.view.Window;
 
 import com.fx.merna.xtrip.R;
 
-public class ReminderDialogActivity extends Activity {
+public class ReminderActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
