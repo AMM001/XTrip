@@ -25,6 +25,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Random;
+
 public class ReminderActivity extends Activity {
 
     TextView txtDialogTitle;
@@ -90,7 +92,12 @@ public class ReminderActivity extends Activity {
                 PendingIntent pendingIntent=stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
                 mBuilder.setContentIntent(pendingIntent);
                 NotificationManager notificationManager= (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.notify(5,mBuilder.build());
+
+                Random random = new Random();
+                int m = random.nextInt(9999 - 1000) + 1000;
+                notificationManager.notify(m,mBuilder.build());
+              //  notificationManager.notify(m,mBuilder.build());
+
 
 
                 Toast.makeText(getApplicationContext(), " See Notification", Toast.LENGTH_LONG).show();

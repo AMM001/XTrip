@@ -10,8 +10,9 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:gravity="center"
-    android:background="@drawable/splashbg"
-    tools:context="com.fx.merna.xtrip.views.activities.SplashActivity">
+    android:background="@drawable/splashs"
+    tools:context="com.fx.merna.xtrip.views.activities.SplashActivity"
+    android:orientation="horizontal">
 
 
     <!--<ImageView-->

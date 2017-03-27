@@ -3,6 +3,8 @@ package com.fx.merna.xtrip.views.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
@@ -12,6 +14,7 @@ import android.support.v7.widget.PopupMenu;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -41,6 +44,8 @@ public class ViewDetailsActivity extends AppCompatActivity {
     CheckBox check;
     Bundle bundleObject;
     TextView statusView;
+    TextView typeView;
+
 
 
     @Override
@@ -53,9 +58,29 @@ public class ViewDetailsActivity extends AppCompatActivity {
         statusView = (TextView) findViewById(R.id.statusView);
         startTrip = (ImageView) findViewById(R.id.view_trip);
         check = (CheckBox) findViewById(R.id.checkBtn);
+        typeView=(TextView)findViewById(R.id.typeView);
         final ImageView imageView;
+        Button startTrip=(Button)findViewById(R.id.startBtn);
+        //Set Font to button
 
-        //Settings Image on Action Bar
+        Typeface face = Typeface.createFromAsset(getAssets(),
+                "fonts/comic.ttf");
+        startTrip.setTypeface(face);
+
+        startTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("trips").child(user.getUid())
+                        .child(trip.getId()).child("status");
+                myRef.setValue("Done");
+                Uri uri = Uri.parse("google.navigation:q=" + trip.getEndLat() + "," + trip.getEndLong() + "&mode=d");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                intent.setPackage("com.google.android.apps.maps");
+                startActivity(intent);
+            }
+        });
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -77,11 +102,18 @@ public class ViewDetailsActivity extends AppCompatActivity {
             //  getActionBar().setDisplayHomeAsUpEnabled(true);
             String f = "From: ";
             fromView.setText(trip.getStartPoint());
-            fromView.setTextColor(Color.RED);
+            fromView.setTextColor(Color.parseColor("#009688"));
             //  fromView.setTextSize(20);
             toView.setText(trip.getEndPoint());
-            toView.setTextColor(Color.RED);
+            toView.setTextColor(Color.parseColor("#009688"));
             statusView.setText(trip.getStatus());
+            String typeOneDirection="2131689669";
+            if(trip.getType().equals(typeOneDirection)){
+                typeView.setText("OneDirection");
+            }
+            else{
+                typeView.setText("RoundTrip");
+            }
             String date[] = DateParser.parseLongDateToStrings(trip.getDate());
             dateView.setText(date[0] + " " + date[1]);
 
@@ -104,7 +136,6 @@ public class ViewDetailsActivity extends AppCompatActivity {
             });
 
             //popup menue and Settings action (update & Delete)
-
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
