@@ -8,71 +8,62 @@ import android.widget.TextView;
 import com.fx.merna.xtrip.R;
 
 /**
- * Created by Merna on 3/19/17.
+ * Created by bo on 21/03/2017.
  */
 
-public class UpcomingViewHolder extends RecyclerView.ViewHolder {
+public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
     private View convertView;
 
     private TextView title, year, from, to;
-    private ImageView viewDetails;
-    private ImageView startTrip;
-    private ImageView imgSetting;
-    private ImageView tripStatus;
+    private ImageView viewDetails, startTrip, imgSetting;
 
 
-    UpcomingViewHolder(View itemView) {
+    HistoryViewHolder(View itemView) {
         super(itemView);
         convertView = itemView;
     }
 
     public TextView getTitle() {
-        if(title == null)
+        if (title == null)
             title = (TextView) convertView.findViewById(R.id.title);
         return title;
     }
 
     public TextView getYear() {
-        if(year == null)
+        if (year == null)
             year = (TextView) convertView.findViewById(R.id.txtDate);
         return year;
     }
 
     public TextView getFrom() {
-        if(from == null)
+        if (from == null)
             from = (TextView) convertView.findViewById(R.id.from);
         return from;
     }
 
     public TextView getTo() {
-        if(to == null)
+        if (to == null)
             to = (TextView) convertView.findViewById(R.id.to);
         return to;
     }
 
     public ImageView getViewDetails() {
-        if(viewDetails == null)
+        if (viewDetails == null)
             viewDetails = (ImageView) convertView.findViewById(R.id.view_trip);
         return viewDetails;
     }
 
     public ImageView getStartTrip() {
-        if(startTrip == null)
+        if (startTrip == null)
             startTrip = (ImageView) convertView.findViewById(R.id.start_trip);
         return startTrip;
     }
 
     public ImageView getImgSetting() {
-        if(imgSetting == null)
-            imgSetting = (ImageView) convertView.findViewById(R.id.settings);
+        if (imgSetting == null)
+            imgSetting = (ImageView) convertView.findViewById(R.id.history_settings);
         return imgSetting;
     }
-
-    public ImageView getTripStatus() {
-        if(tripStatus==null)
-            tripStatus=(ImageView) convertView.findViewById(R.id.round_trip);
-        return tripStatus;
-    }
-
 }
+
