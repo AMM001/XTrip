@@ -23,7 +23,9 @@ public class DateParser {
 
     public static String[] parseLongDateToStrings(Long lDate) {
         Date date = new Date();
-        date.setTime(lDate);
+        if(lDate != null) {
+            date.setTime(lDate);
+        }
         return Constants.simpleDateFormat.format(date).split(" ");
     }
 }
