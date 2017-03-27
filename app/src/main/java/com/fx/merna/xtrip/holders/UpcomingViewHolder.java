@@ -16,7 +16,10 @@ public class UpcomingViewHolder extends RecyclerView.ViewHolder {
     private View convertView;
 
     private TextView title, year, from, to;
-    private ImageView viewDetails, startTrip, imgSetting;
+    private ImageView viewDetails;
+    private ImageView startTrip;
+    private ImageView imgSetting;
+    private ImageView tripStatus;
 
 
     UpcomingViewHolder(View itemView) {
@@ -65,4 +68,11 @@ public class UpcomingViewHolder extends RecyclerView.ViewHolder {
             imgSetting = (ImageView) convertView.findViewById(R.id.settings);
         return imgSetting;
     }
+
+    public ImageView getTripStatus() {
+        if(tripStatus==null)
+            tripStatus=(ImageView) convertView.findViewById(R.id.round_trip);
+        return tripStatus;
+    }
+
 }
