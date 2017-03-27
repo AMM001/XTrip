@@ -1,86 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_add_trip"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.fx.merna.xtrip.views.activities.AddTripActivity">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/edtTripName"
-        android:hint="Trip name"
+    <LinearLayout
+        android:id="@+id/activity_add_trip"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="com.fx.merna.xtrip.views.activities.AddTripActivity">
+
+        <EditText
+            android:id="@+id/edtTripName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Trip name" />
 
 
-    <fragment
-    android:id="@+id/startPoint"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-    />
-    <fragment
-        android:id="@+id/endPoint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-        />
+        <fragment
+            android:id="@+id/startPoint"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <fragment
+            android:id="@+id/endPoint"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:weightSum="2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
             <EditText
                 android:id="@+id/edtDate"
-                android:hint="Enter Date"
-                android:textSize="14dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:editable="false"
+                android:hint="Enter Date"
                 android:onClick="edtDateAction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textSize="14dp" />
 
             <EditText
                 android:id="@+id/edtTime"
-                android:hint="Enter Time"
-                android:textSize="14dp"
-                android:editable="false"
-                android:layout_weight="1"
-                android:onClick="edtTimeAction"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:editable="false"
+                android:hint="Enter Time"
+                android:onClick="edtTimeAction"
+                android:textSize="14dp" />
 
         </LinearLayout>
 
 
-    <RadioGroup
-        android:id="@+id/rBtnTripType"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <RadioButton
-            android:id="@+id/oneDirctionType"
-            android:layout_width="wrap_content"
+        <RadioGroup
+            android:id="@+id/rBtnTripType"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/trip_type_one_direction"/>
-        <RadioButton
-            android:id="@+id/roundTripType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/trip_type_round_trip"/>
-    </RadioGroup>
+            android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btnCreateTrip"
-        android:text="Done"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+            <RadioButton
+                android:id="@+id/oneDirctionType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/trip_type_one_direction" />
+
+            <RadioButton
+                android:id="@+id/roundTripType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/trip_type_round_trip" />
+        </RadioGroup>
+
+        <!--<Button-->
+        <!--android:id="@+id/btnCreateTrip"-->
+        <!--android:text="Done"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content" />-->
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/notes_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</ScrollView>

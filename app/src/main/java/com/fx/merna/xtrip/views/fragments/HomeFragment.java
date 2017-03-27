@@ -2,6 +2,7 @@ package com.fx.merna.xtrip.views.fragments;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,18 +25,23 @@ import com.google.firebase.database.Query;
 
 public class HomeFragment extends Fragment {
 
+
     private RecyclerView tripRecyclerview;
     private LinearLayoutManager linearLayoutManager;
     private TripFirebaseAdapter mTripFirebaseAdapter;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+
         View root =inflater.inflate(R.layout.fragment_home, container, false);
         tripRecyclerview= (RecyclerView) root.findViewById(R.id.recycler_view);
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
+
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         Log.i("MY_TAG_IN_HOME",user.getUid());

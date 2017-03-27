@@ -1,6 +1,7 @@
 package com.fx.merna.xtrip.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -21,6 +22,7 @@ public class Trip implements Serializable {
     private String status;
     private double distance;
     private Long date;
+    private ArrayList<String> notes;
 
     public Trip() {
     }
@@ -134,5 +136,13 @@ public class Trip implements Serializable {
 
     public void setEndLat(String endLat) {
         this.endLat = endLat;
+    }
+
+    public ArrayList<String> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(ArrayList<String> notes) {
+        this.notes = notes;
     }
 }

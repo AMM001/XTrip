@@ -1,18 +1,18 @@
 package com.fx.merna.xtrip.views.activities;
 
 
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,15 +21,11 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TimePicker;
-import android.widget.Toast;
-
 import com.fx.merna.xtrip.R;
+import com.fx.merna.xtrip.adapters.NotesRecyclerAdapter;
 import com.fx.merna.xtrip.models.Trip;
 import com.fx.merna.xtrip.utils.Alarm;
-import com.fx.merna.xtrip.utils.AlarmBroadcastReceiver;
-import com.fx.merna.xtrip.utils.Constants;
 import com.fx.merna.xtrip.utils.DateParser;
-import com.fx.merna.xtrip.utils.SHA;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
@@ -40,6 +36,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 
@@ -53,6 +50,17 @@ public class AddTripActivity extends AppCompatActivity {
     Bundle bandleToEdit;
     Trip trip;
     Calendar calendar = Calendar.getInstance();
+    FirebaseDatabase database;
+    MenuItem actionBarMenu;
+    boolean isEnable = false;
+
+    //-----notes----
+    private RecyclerView notesRecyclerview;
+    private LinearLayoutManager linearLayoutManager;
+    private NotesRecyclerAdapter mNotesRecyclerAdapter;
+    ArrayList<String> notes = new ArrayList<>();
+    //---------------
+
     private TextWatcher mTxtWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -68,6 +76,7 @@ public class AddTripActivity extends AppCompatActivity {
         public void afterTextChanged(Editable s) {
             Log.i("MY_Tag", "Listener");
             checkAllFieldsIsEmpty();
+            invalidateOptionsMenu();
         }
     };
 
@@ -83,6 +92,19 @@ public class AddTripActivity extends AppCompatActivity {
         }
 
         checkAllFieldsIsEmpty();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.add_trip_menu, menu);
+        actionBarMenu = (MenuItem) menu.findItem(R.id.action_menu_save);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        actionBarMenu.setEnabled(isEnable);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -118,7 +140,9 @@ public class AddTripActivity extends AppCompatActivity {
                     finish();
                     return true;
                 }
-
+            case R.id.action_menu_save:
+                saveTripAction(trip);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -129,7 +153,7 @@ public class AddTripActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_trip);
 
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
 
         edtTripName = (EditText) findViewById(R.id.edtTripName);
         edtTripName.addTextChangedListener(mTxtWatcher);
@@ -137,7 +161,9 @@ public class AddTripActivity extends AppCompatActivity {
         edtDate.addTextChangedListener(mTxtWatcher);
         edtTime = (EditText) findViewById(R.id.edtTime);
         edtTime.addTextChangedListener(mTxtWatcher);
-        btnCreateTrip = (Button) findViewById(R.id.btnCreateTrip);
+
+
+//        btnCreateTrip = (Button) findViewById(R.id.btnCreateTrip);
         rBtnTripType = (RadioGroup) findViewById(R.id.rBtnTripType);
         rBtnTripType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -174,6 +200,9 @@ public class AddTripActivity extends AppCompatActivity {
             endLong = trip.getEndLong();
             endLat = trip.getEndLat();
 
+            notes = trip.getNotes();
+            Log.i("MY_TAG", "<>" + notes.size() + "<>" + notes.get(0));
+
             String[] arrDate = DateParser.parseLongDateToStrings(trip.getDate());
             edtDate.setText(arrDate[0]);
             edtTime.setText(arrDate[1]);
@@ -183,39 +212,75 @@ public class AddTripActivity extends AppCompatActivity {
 
         }
 
-        btnCreateTrip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        //-------- notes------
 
-                String name = edtTripName.getText().toString();
-                String type = String.valueOf(rBtnTripType.getCheckedRadioButtonId());
-                Log.i("TRIP", type);
+        notesRecyclerview = (RecyclerView) findViewById(R.id.notes_recycler_view);
+        linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mNotesRecyclerAdapter = new NotesRecyclerAdapter(getApplicationContext(), notes);
+        notesRecyclerview.setLayoutManager(linearLayoutManager);
+        notesRecyclerview.setAdapter(mNotesRecyclerAdapter);
+        mNotesRecyclerAdapter.notifyDataSetChanged();
 
-//                String dateTime = ((EditText) findViewById(R.id.edtDate)).getText().toString() +
-//                        " " + ((EditText) findViewById(R.id.edtTime)).getText().toString();
+        //-------------------
 
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                DatabaseReference myRef = database.getReference("trips").child(user.getUid());
-                Trip newTrip;
-
-                if (bandleToEdit != null) {
-                    newTrip = new Trip(trip.getId(), name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, calendar.getTimeInMillis());
-                    myRef.child(trip.getId()).setValue(newTrip);
-
-                } else {
-                    String key = myRef.push().getKey();
-                    newTrip = new Trip(key, name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, calendar.getTimeInMillis());
-                    myRef.child(key).setValue(newTrip);
-                }
-
-                //Create new or update PendingIntent and add it to the AlarmManager
-                Alarm.setAlarm(getApplicationContext(), newTrip, calendar.getTimeInMillis());
-
-            }
-        });
-
+//        btnCreateTrip.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                String name = edtTripName.getText().toString();
+//                String type = String.valueOf(rBtnTripType.getCheckedRadioButtonId());
+//                Log.i("TRIP", type);
+//
+////                String dateTime = ((EditText) findViewById(R.id.edtDate)).getText().toString() +
+////                        " " + ((EditText) findViewById(R.id.edtTime)).getText().toString();
+//
+//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//                DatabaseReference myRef = database.getReference("trips").child(user.getUid());
+//                Trip newTrip;
+//
+//                if (bandleToEdit != null) {
+//                    newTrip = new Trip(trip.getId(), name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, calendar.getTimeInMillis());
+//                    myRef.child(trip.getId()).setValue(newTrip);
+//
+//                } else {
+//                    String key = myRef.push().getKey();
+//                    newTrip = new Trip(key, name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, calendar.getTimeInMillis());
+//                    myRef.child(key).setValue(newTrip);
+//                }
+//
+//                //Create new or update PendingIntent and add it to the AlarmManager
+//                Alarm.setAlarm(getApplicationContext(), newTrip, calendar.getTimeInMillis());
+//
+//            }
+//        });
         handlePlaceSelection();
 
+    }
+
+    public void saveTripAction(Trip trip) {
+
+        String name = edtTripName.getText().toString();
+        String type = String.valueOf(rBtnTripType.getCheckedRadioButtonId());
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference myRef = database.getReference("trips").child(user.getUid());
+        Trip newTrip;
+
+        if (bandleToEdit != null) {
+            newTrip = new Trip(trip.getId(), name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, calendar.getTimeInMillis());
+            newTrip.setNotes(notes);
+            myRef.child(trip.getId()).setValue(newTrip);
+
+        } else {
+            Log.i("MY_TAG", notes.size() + "<>" + notes.get(0) + "<>");
+            String key = myRef.push().getKey();
+            newTrip = new Trip(key, name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, calendar.getTimeInMillis());
+            newTrip.setNotes(notes);
+            myRef.child(key).setValue(newTrip);
+        }
+
+        //Create new or update PendingIntent and add it to the AlarmManager
+        Alarm.setAlarm(getApplicationContext(), newTrip, calendar.getTimeInMillis());
     }
 
     public void handlePlaceSelection() {
@@ -344,10 +409,14 @@ public class AddTripActivity extends AppCompatActivity {
         Log.i("MY_Tag", "Before" + name + date + time + type + startPoint + endPoint);
         if (name || date || time || type || startPoint || endPoint) {
             Log.i("MY_Tag", "in True");
-            btnCreateTrip.setEnabled(false);
+            //btnCreateTrip.setEnabled(false);
+            isEnable = false;
+            invalidateOptionsMenu();
         } else {
             Log.i("MY_Tag", "in false");
-            btnCreateTrip.setEnabled(true);
+            // btnCreateTrip.setEnabled(true);
+            isEnable = true;
+            invalidateOptionsMenu();
         }
 
     }

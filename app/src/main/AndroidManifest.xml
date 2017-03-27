@@ -52,7 +52,6 @@
         <activity
             android:name=".views.activities.ReminderActivity"
             android:theme="@style/AppTheme.Dialog"></activity>
-
         <receiver android:name=".utils.AlarmBroadcastReceiver"></receiver>
     </application>
 
