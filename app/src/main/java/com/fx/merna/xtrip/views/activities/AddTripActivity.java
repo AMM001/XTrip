@@ -189,6 +189,7 @@ public class AddTripActivity extends AppCompatActivity {
 
                 String name = edtTripName.getText().toString();
                 String type = String.valueOf(rBtnTripType.getCheckedRadioButtonId());
+                Log.i("TRIP", type);
 
 //                String dateTime = ((EditText) findViewById(R.id.edtDate)).getText().toString() +
 //                        " " + ((EditText) findViewById(R.id.edtTime)).getText().toString();

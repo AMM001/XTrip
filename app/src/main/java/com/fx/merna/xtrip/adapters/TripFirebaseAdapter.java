@@ -59,6 +59,7 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final UpcomingViewHolder holder = viewHolder;
 
+
         holder.getTitle().setText(model.getName().toUpperCase());
         Typeface face = Typeface.createFromAsset(activity.getAssets(),
                 "fonts/LHANDW.TTF");
@@ -144,6 +145,11 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
             @Override
             public void onClick(View v) {
 
+                //--------------- round trip code -------------
+                if (model.getType().equals(Constants.roundTrip)) {
+
+
+                }
                 //----------- change status to Done in DB  when start trip ----------
 
                 DatabaseReference myRef = database.getReference("trips").child(user.getUid())
