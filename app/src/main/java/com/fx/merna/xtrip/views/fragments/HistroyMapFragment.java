@@ -123,6 +123,8 @@ public class HistroyMapFragment extends Fragment implements OnMapReadyCallback{
                             , Double.parseDouble(tripsnSnapshot.child("endLong").getValue().toString()));
                     String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + start.latitude+","+start.longitude + "&destination=" + end.latitude+","+end.longitude + "&AIzaSyC_9uZBC_Sv84f4eAb4gZ2bsPHWBEi8NSY";
                     draw(url);
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(start));
+                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(11));
                 }
             }
 
@@ -188,13 +190,13 @@ public class HistroyMapFragment extends Fragment implements OnMapReadyCallback{
                 googleMap.addPolyline(new PolylineOptions().addAll(points).width(8).color(new Random().nextInt()+100));
                 googleMap.addMarker(new MarkerOptions().position(new LatLng(latitudeSource, longitudeSource)).icon(BitmapDescriptorFactory.defaultMarker(color)));
                 googleMap.addMarker(new MarkerOptions().position(new LatLng(latitudeDest, longitudeDest)).icon(BitmapDescriptorFactory.defaultMarker(color)));
-                Toast.makeText(getActivity().getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), "load history successfully", Toast.LENGTH_SHORT).show();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 System.out.println("error   >" + error.getMessage());
-                Toast.makeText(getActivity().getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), "error in loading history", Toast.LENGTH_SHORT).show();
             }
         });
         mySingleTone.addToRequestQueu(jsonObjectRequest);
@@ -203,6 +205,6 @@ public class HistroyMapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap mMap) {
         googleMap = mMap;
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(30.8206, 30.8025), 6));
+        //`mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(30.8206, 30.8025), 6));
     }
 }

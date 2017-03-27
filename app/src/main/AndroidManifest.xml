@@ -46,6 +46,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".views.activities.LoginActivity" />
         </activity>
+        <activity android:name=".views.activities.ViewDetailsActivity">
+
+        </activity>
 
     </application>
 
