@@ -1,5 +1,6 @@
 package com.fx.merna.xtrip.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.fx.merna.xtrip.R;
 import com.fx.merna.xtrip.holders.NotesHeaderViewHolder;
@@ -30,7 +32,6 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     public NotesRecyclerAdapter(Context context, ArrayList<String> notes) {
         this.context = context;
         this.notes = notes;
-        Log.i("MY_TAG", "<in>" + notes.size());
     }
 
     @Override
@@ -50,17 +51,18 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         if (holder instanceof NotesHeaderViewHolder) {
             final NotesHeaderViewHolder header = (NotesHeaderViewHolder) holder;
-            final EditText edtTxtAddNote = header.getEdtTxtNote();
+            final EditText edtTxtNote = header.getEdtTxtNote();
 
             if (notes.size() < 4) header.getBtnAddNote().setEnabled(true);
 
             header.getBtnAddNote().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i("MY_TAG", edtTxtAddNote.getText().toString());
+                    Log.i("MY_TAG", edtTxtNote.getText().toString());
                     if (notes.size() < 4) {
-                        notes.add(edtTxtAddNote.getText().toString());
+                        notes.add(edtTxtNote.getText().toString());
                         notifyDataSetChanged();
+                        edtTxtNote.setText("");
                     }
                     if (notes.size() == 4) header.getBtnAddNote().setEnabled(false);
                 }
@@ -89,7 +91,8 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemCount() {
-        return notes.size() + 1;
+        if (notes != null) return notes.size() + 1;
+        else return 1;
     }
 
     @Override

@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.fx.merna.xtrip.MainActivity;
 import com.fx.merna.xtrip.R;
 import com.fx.merna.xtrip.holders.UpcomingViewHolder;
 import com.fx.merna.xtrip.models.Trip;
@@ -42,8 +41,7 @@ import java.util.List;
 public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingViewHolder> {
 
     Activity activity;
-    int flag=0;
-
+    int flag = 0;
 
 
     public TripFirebaseAdapter(Activity activity, Class<Trip> modelClass, int modelLayout, Class<UpcomingViewHolder> viewHolderClass, Query ref) {
@@ -61,9 +59,9 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
 
 
         holder.getTitle().setText(model.getName().toUpperCase());
-        Typeface face = Typeface.createFromAsset(activity.getAssets(),
-                "fonts/LHANDW.TTF");
-        holder.getTitle().setTypeface(face);
+//        Typeface face = Typeface.createFromAsset(activity.getAssets(),
+//                "fonts/LHANDW.TTF");
+//        holder.getTitle().setTypeface(face);
         holder.getFrom().setText(model.getStartPoint());
         holder.getTo().setText(model.getEndPoint());
 
@@ -71,7 +69,7 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
         holder.getYear().setText(arrDate[0] + " " + arrDate[1]);
 
         //Test Round Trip Type to change image visiblity
-       final ImageView roundImg = holder.getTripStatus();
+        final ImageView roundImg = holder.getTripStatus();
 
 
         roundImg.setImageResource(R.drawable.roundtrip);
@@ -155,21 +153,21 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
                 DatabaseReference myRef = database.getReference("trips").child(user.getUid())
                         .child(model.getId()).child("status");
 
-                DatabaseReference ref=database.getReference("trips").child(user.getUid())
+                DatabaseReference ref = database.getReference("trips").child(user.getUid())
                         .child(model.getId());
 
                 //Round Trip Handling
                 if (model.getType().equals(Constants.roundTrip)) {
-                   // myRef.setValue("upcoming");
+                    // myRef.setValue("upcoming");
                     //model.setStatus("upcoming");
                     roundImg.setVisibility(View.VISIBLE);
-                    String newEndLat,newEndLong,newStartLat,newStartLong,newStartPoint,newEndPoint;
-                    newStartLat=model.getEndLat();
-                    newEndLat=model.getStartLat();
-                    newStartLong=model.getEndLong();
-                    newEndLong=model.getStartLong();
-                    newStartPoint=model.getEndPoint();
-                    newEndPoint=model.getStartPoint();
+                    String newEndLat, newEndLong, newStartLat, newStartLong, newStartPoint, newEndPoint;
+                    newStartLat = model.getEndLat();
+                    newEndLat = model.getStartLat();
+                    newStartLong = model.getEndLong();
+                    newEndLong = model.getStartLong();
+                    newStartPoint = model.getEndPoint();
+                    newEndPoint = model.getStartPoint();
 
                     model.setStartLat(newStartLat);
                     model.setStartLong(newStartLong);
@@ -180,7 +178,6 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
                     model.setType(Constants.onDirectionTrip);
 
 
-
                     Uri uri = Uri.parse("google.navigation:q=" + model.getEndLat() + "," + model.getEndLong() + "&mode=d");
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     intent.setPackage("com.google.android.apps.maps");
@@ -188,10 +185,7 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
                     ref.setValue(model);
 
 
-                }
-
-
-                else{
+                } else {
                     myRef.setValue("Done");
                     Uri uri = Uri.parse("google.navigation:q=" + model.getEndLat() + "," + model.getEndLong() + "&mode=d");
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);

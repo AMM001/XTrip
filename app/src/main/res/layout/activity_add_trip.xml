@@ -46,6 +46,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:drawableLeft="@drawable/date"
+                android:drawablePadding="5dp"
                 android:editable="false"
                 android:hint="Enter Date"
                 android:onClick="edtDateAction"
@@ -56,6 +58,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:drawableLeft="@drawable/time"
+                android:drawablePadding="5dp"
                 android:editable="false"
                 android:hint="Enter Time"
                 android:onClick="edtTimeAction"
@@ -66,9 +70,19 @@
 
         <RadioGroup
             android:id="@+id/rBtnTripType"
+            android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
+
+            <TextView
+                android:layout_marginRight="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Trip Type:" />
 
             <RadioButton
                 android:id="@+id/oneDirctionType"
@@ -82,13 +96,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/trip_type_round_trip" />
         </RadioGroup>
-
-        <!--<Button-->
-        <!--android:id="@+id/btnCreateTrip"-->
-        <!--android:text="Done"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content" />-->
-
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/notes_recycler_view"

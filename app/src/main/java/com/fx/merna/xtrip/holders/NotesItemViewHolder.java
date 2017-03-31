@@ -2,7 +2,7 @@ package com.fx.merna.xtrip.holders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.fx.merna.xtrip.R;
@@ -15,7 +15,7 @@ public class NotesItemViewHolder extends RecyclerView.ViewHolder {
 
     private View convertView;
     private TextView txtNote;
-    private Button btnDeleteNote;
+    private ImageButton btnDeleteNote;
 
 
     public NotesItemViewHolder(View itemView) {
@@ -29,9 +29,9 @@ public class NotesItemViewHolder extends RecyclerView.ViewHolder {
         return txtNote;
     }
 
-    public Button getBtnDeleteNote() {
+    public ImageButton getBtnDeleteNote() {
         if (btnDeleteNote == null)
-            btnDeleteNote = (Button) convertView.findViewById(R.id.btnDeleteNote);
+            btnDeleteNote = (ImageButton) convertView.findViewById(R.id.btnDeleteNote);
         return btnDeleteNote;
     }
 }

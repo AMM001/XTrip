@@ -14,6 +14,7 @@ import android.support.v7.app.NotificationCompat;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,11 +26,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class ReminderActivity extends Activity {
 
-    TextView txtDialogTitle;
+    TextView txtDialogTitle, txtMore;
     Button btnStart, btnLater, btnCancel;
 
     @Override
@@ -44,10 +46,36 @@ public class ReminderActivity extends Activity {
         btnStart = (Button) findViewById(R.id.btnStart);
         btnLater = (Button) findViewById(R.id.btnLater);
         btnCancel = (Button) findViewById(R.id.btnCancel);
+        txtMore = (TextView) findViewById(R.id.txtMore);
+
 
         Bundle bundle = this.getIntent().getExtras();
         final Trip trip = (Trip) bundle.getSerializable(Constants.reminderBundle);
         txtDialogTitle.setText(trip.getName());
+
+        //------- start notes  code ---------
+        LinearLayout notesLinearLayout = (LinearLayout) findViewById(R.id.linearNotesList);
+        if (trip.getNotes() != null) {
+
+            for (int i = 0; i < trip.getNotes().size(); i++) {
+                TextView note = new TextView(this);
+                note.setText("- " + trip.getNotes().get(i));
+
+                notesLinearLayout.addView(note);
+            }
+        }
+
+        txtMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ViewDetailsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("tripDetails", trip);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+        //--------- end notes code ----------
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,8 +123,8 @@ public class ReminderActivity extends Activity {
 
                 Random random = new Random();
                 int m = random.nextInt(9999 - 1000) + 1000;
-                notificationManager.notify(m,mBuilder.build());
-              //  notificationManager.notify(m,mBuilder.build());
+                notificationManager.notify(m, mBuilder.build());
+                //  notificationManager.notify(m,mBuilder.build());
 
 
 

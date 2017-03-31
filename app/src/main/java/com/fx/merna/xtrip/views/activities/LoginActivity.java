@@ -21,6 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -35,7 +36,8 @@ import com.google.firebase.database.FirebaseDatabase;
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     EditText edtEmail, edtPassword;
-    Button btnSignin, btnGSignin;
+    Button btnSignin;
+    SignInButton btnGSignin;
     TextView txtSignup;
 
     private FirebaseAuth mAuth;
@@ -78,8 +80,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         edtEmail = (EditText) findViewById(R.id.edtEmail);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
         btnSignin = (Button) findViewById(R.id.btnLogin);
-        btnGSignin= (Button) findViewById(R.id.btnGLogin);
+        btnGSignin = (SignInButton) findViewById(R.id.btnGLogin);
         txtSignup = (TextView) findViewById(R.id.linkSignUp);
+
+        TextView textView = (TextView) btnGSignin.getChildAt(0);
+        textView.setText("SIGN IN WITH GOOGLE");
 
         mAuth = FirebaseAuth.getInstance();
         mAuthProgressDialog = new ProgressDialog(this);

@@ -4,6 +4,7 @@ package com.fx.merna.xtrip.views.activities;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TimePicker;
+import android.widget.Toast;
+
 import com.fx.merna.xtrip.R;
 import com.fx.merna.xtrip.adapters.NotesRecyclerAdapter;
 import com.fx.merna.xtrip.models.Trip;
@@ -39,11 +42,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static com.fx.merna.xtrip.R.drawable.view;
+
 
 public class AddTripActivity extends AppCompatActivity {
 
     EditText edtTripName, edtDate, edtTime, edtStartPoint, edtEndPoint;
-    Button btnCreateTrip;
     RadioGroup rBtnTripType;
     PlaceAutocompleteFragment endPointAutocompleteFragment, startPointAutocompleteFragment;
     String startPoint = "", endPoint = "", startLong = "", startLat = "", endLong = "", endLat = "";
@@ -200,8 +204,7 @@ public class AddTripActivity extends AppCompatActivity {
             endLong = trip.getEndLong();
             endLat = trip.getEndLat();
 
-            notes = trip.getNotes();
-            Log.i("MY_TAG", "<>" + notes.size() + "<>" + notes.get(0));
+            if (trip.getNotes() != null) notes = trip.getNotes();
 
             String[] arrDate = DateParser.parseLongDateToStrings(trip.getDate());
             edtDate.setText(arrDate[0]);
@@ -272,7 +275,6 @@ public class AddTripActivity extends AppCompatActivity {
             myRef.child(trip.getId()).setValue(newTrip);
 
         } else {
-            Log.i("MY_TAG", notes.size() + "<>" + notes.get(0) + "<>");
             String key = myRef.push().getKey();
             newTrip = new Trip(key, name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, calendar.getTimeInMillis());
             newTrip.setNotes(notes);
@@ -281,6 +283,13 @@ public class AddTripActivity extends AppCompatActivity {
 
         //Create new or update PendingIntent and add it to the AlarmManager
         Alarm.setAlarm(getApplicationContext(), newTrip, calendar.getTimeInMillis());
+
+        Intent intent = new Intent(getApplicationContext(), ViewDetailsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("tripDetails", newTrip);
+        intent.putExtras(bundle);
+        startActivity(intent);
+
     }
 
     public void handlePlaceSelection() {
@@ -290,10 +299,10 @@ public class AddTripActivity extends AppCompatActivity {
         startPointAutocompleteFragment.setHint("Enter start Point");
         edtStartPoint.setTextSize(14);
 
-        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
-                .build();
-        startPointAutocompleteFragment.setFilter(typeFilter);
+//        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+//                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
+//                .build();
+//        startPointAutocompleteFragment.setFilter(typeFilter);
 
         startPointAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -320,7 +329,7 @@ public class AddTripActivity extends AppCompatActivity {
         edtEndPoint.setHint("Enter end Point");
         edtEndPoint.setTextSize(14);
 
-        endPointAutocompleteFragment.setFilter(typeFilter);
+//        endPointAutocompleteFragment.setFilter(typeFilter);
 
         endPointAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -361,6 +370,7 @@ public class AddTripActivity extends AppCompatActivity {
             }
         }, mYear, mMonth, mDay);
 
+        mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         mDatePicker.setTitle("Select date");
         mDatePicker.show();
     }
@@ -383,10 +393,22 @@ public class AddTripActivity extends AppCompatActivity {
                         calendar.set(Calendar.SECOND, 00);
 
                         edtTime.setText(hourOfDay + ":" + minute);
+
                     }
                 }, mHour, mMinute, false);
-        timePickerDialog.show();
 
+        timePickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+                    edtTime.setText("");
+                    edtTime.setHint("Enter Time");
+                    Toast.makeText(getApplicationContext(), "please pick a valid time", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        timePickerDialog.show();
     }
 
     public void checkAllFieldsIsEmpty() {

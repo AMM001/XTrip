@@ -70,8 +70,8 @@ public class UpcomingViewHolder extends RecyclerView.ViewHolder {
     }
 
     public ImageView getTripStatus() {
-        if(tripStatus==null)
-            tripStatus=(ImageView) convertView.findViewById(R.id.round_trip);
+        if (tripStatus == null)
+            tripStatus = (ImageView) convertView.findViewById(R.id.round_trip);
         return tripStatus;
     }
 

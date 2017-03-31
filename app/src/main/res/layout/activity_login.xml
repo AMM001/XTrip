@@ -14,24 +14,23 @@
 
     <ImageView
         android:id="@+id/imgVLogo"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@drawable/logo"
-        android:layout_marginBottom="30dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         android:layout_gravity="center"
-         />
-
+        android:layout_marginBottom="30dp"
+        android:src="@drawable/logo" />
 
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <EditText
             android:id="@+id/edtEmail"
-            android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"/>
+            android:hint="Email"
+            android:inputType="textEmailAddress" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -43,9 +42,9 @@
             android:id="@+id/edtPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
+            android:ems="10"
             android:hint="Password"
-            android:ems="10" />
+            android:inputType="textPassword" />
     </android.support.design.widget.TextInputLayout>
 
     <Button
@@ -53,32 +52,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="sign in"/>
+        android:text="SIGN IN"
+        android:backgroundTint="@color/colorX"
+        android:textColor="#fff" />
 
-    <Button
+    <TextView
+        android:padding="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="OR" />
+
+    <com.google.android.gms.common.SignInButton
         android:id="@+id/btnGLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="sign in with Google"/>
+        android:text="sign in with Google"
+        app:colorScheme="dark" />
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="15dp"
-        android:layout_gravity="center">
+        android:orientation="horizontal">
+
         <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Don't have an account?"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Don't have an account?" />
+
         <TextView
             android:id="@+id/linkSignUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:text=" SIGN UP "/>
+            android:text=" SIGN UP "
+            android:textStyle="bold" />
     </LinearLayout>
-
 
 
 </LinearLayout>

@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,18 +12,22 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fx.merna.xtrip.R;
 import com.fx.merna.xtrip.models.Trip;
+import com.fx.merna.xtrip.utils.Constants;
 import com.fx.merna.xtrip.utils.DateParser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,34 +38,31 @@ import java.sql.Date;
 
 public class ViewDetailsActivity extends AppCompatActivity {
 
-    TextView dateView;
+    TextView dateView, timeView;
     TextView fromView;
     TextView toView;
-    TextView statusUpcoming;
-    TextView statusDone;
-    TextView statusCanceled;
     ImageView startTrip;
     Trip trip;
     CheckBox check;
     Bundle bundleObject;
     TextView statusView;
-    TextView typeView;
-
+    ImageView typeView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
+
         dateView = (TextView) findViewById(R.id.dateView);
+        timeView = (TextView) findViewById(R.id.timeView);
         fromView = (TextView) findViewById(R.id.from);
         toView = (TextView) findViewById(R.id.to);
-        statusView = (TextView) findViewById(R.id.statusView);
         startTrip = (ImageView) findViewById(R.id.view_trip);
         check = (CheckBox) findViewById(R.id.checkBtn);
-        typeView=(TextView)findViewById(R.id.typeView);
+        typeView = (ImageView) findViewById(R.id.imgTripType);
         final ImageView imageView;
-        Button startTrip=(Button)findViewById(R.id.startBtn);
+        Button startTrip = (Button) findViewById(R.id.startBtn);
         //Set Font to button
 
         Typeface face = Typeface.createFromAsset(getAssets(),
@@ -98,27 +100,23 @@ public class ViewDetailsActivity extends AppCompatActivity {
         if (bundleObject != null) {
             trip = (Trip) bundleObject.getSerializable("tripDetails");
             setTitle(trip.getName());
-            //  getActionBar().setHomeButtonEnabled(true);
-            //  getActionBar().setDisplayHomeAsUpEnabled(true);
-            String f = "From: ";
+
             fromView.setText(trip.getStartPoint());
-            fromView.setTextColor(Color.parseColor("#009688"));
-            //  fromView.setTextSize(20);
+
             toView.setText(trip.getEndPoint());
-            toView.setTextColor(Color.parseColor("#009688"));
-            statusView.setText(trip.getStatus());
-            String typeOneDirection="2131689669";
-            if(trip.getType().equals(typeOneDirection)){
-                typeView.setText("OneDirection");
+
+            if (trip.getType().equals(Constants.onDirectionTrip)) {
+                typeView.setImageResource(R.drawable.about_icon);
+
+            } else {
+                typeView.setImageResource(R.drawable.history_icon);
             }
-            else{
-                typeView.setText("RoundTrip");
-            }
+
             String date[] = DateParser.parseLongDateToStrings(trip.getDate());
-            dateView.setText(date[0] + " " + date[1]);
+            dateView.setText(date[0]);
+            timeView.setText(date[1]);
 
             //check box change states to done
-
             check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -134,6 +132,22 @@ public class ViewDetailsActivity extends AppCompatActivity {
                     }
                 }
             });
+
+            //--------- Notes  code----------
+            if (trip.getNotes() != null) {
+                Log.i("MY_Tag", trip.getNotes() + ">num<");
+                findViewById(R.id.notes_title).setVisibility(View.VISIBLE);
+                ListView notesList = (ListView) findViewById(R.id.notes_list);
+                ArrayAdapter notesAdapter = new ArrayAdapter(getApplicationContext()
+                        , R.layout.details_notes_list_item, trip.getNotes());
+                notesList.setAdapter(notesAdapter);
+
+            } else {
+                findViewById(R.id.notes_title).setVisibility(View.INVISIBLE);
+            }
+
+            //--------- end Notes code ----------
+
 
             //popup menue and Settings action (update & Delete)
             imageView.setOnClickListener(new View.OnClickListener() {
