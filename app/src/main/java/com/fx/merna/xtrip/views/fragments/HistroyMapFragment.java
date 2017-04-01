@@ -107,6 +107,7 @@ public class HistroyMapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onResume() {
         super.onResume();
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference tripsList = database.getReference("trips").child(user.getUid());
@@ -205,6 +206,6 @@ public class HistroyMapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap mMap) {
         googleMap = mMap;
-        //`mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(30.8206, 30.8025), 6));
+        //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(30.8206, 30.8025), 6));
     }
 }

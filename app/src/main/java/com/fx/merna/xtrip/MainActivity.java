@@ -139,8 +139,6 @@ public class MainActivity extends AppCompatActivity
             fragment = new HomeFragment();
         } else if (item.getItemId() == R.id.nav_history) {
             fragment = new HistoryFragment();
-        } else if (item.getItemId() == R.id.nav_about) {
-
         } else if (item.getItemId() == R.id.nav_logout) {
 
             FirebaseAuth.getInstance().signOut();

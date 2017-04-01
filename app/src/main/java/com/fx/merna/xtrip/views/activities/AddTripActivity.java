@@ -206,6 +206,9 @@ public class AddTripActivity extends AppCompatActivity {
 
             if (trip.getNotes() != null) notes = trip.getNotes();
 
+
+            calendar.setTimeInMillis(trip.getDate());
+
             String[] arrDate = DateParser.parseLongDateToStrings(trip.getDate());
             edtDate.setText(arrDate[0]);
             edtTime.setText(arrDate[1]);
@@ -224,38 +227,6 @@ public class AddTripActivity extends AppCompatActivity {
         notesRecyclerview.setAdapter(mNotesRecyclerAdapter);
         mNotesRecyclerAdapter.notifyDataSetChanged();
 
-        //-------------------
-
-//        btnCreateTrip.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                String name = edtTripName.getText().toString();
-//                String type = String.valueOf(rBtnTripType.getCheckedRadioButtonId());
-//                Log.i("TRIP", type);
-//
-////                String dateTime = ((EditText) findViewById(R.id.edtDate)).getText().toString() +
-////                        " " + ((EditText) findViewById(R.id.edtTime)).getText().toString();
-//
-//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//                DatabaseReference myRef = database.getReference("trips").child(user.getUid());
-//                Trip newTrip;
-//
-//                if (bandleToEdit != null) {
-//                    newTrip = new Trip(trip.getId(), name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, calendar.getTimeInMillis());
-//                    myRef.child(trip.getId()).setValue(newTrip);
-//
-//                } else {
-//                    String key = myRef.push().getKey();
-//                    newTrip = new Trip(key, name, startPoint, startLong, startLat, endPoint, endLong, endLat, type, calendar.getTimeInMillis());
-//                    myRef.child(key).setValue(newTrip);
-//                }
-//
-//                //Create new or update PendingIntent and add it to the AlarmManager
-//                Alarm.setAlarm(getApplicationContext(), newTrip, calendar.getTimeInMillis());
-//
-//            }
-//        });
         handlePlaceSelection();
 
     }
@@ -289,6 +260,8 @@ public class AddTripActivity extends AppCompatActivity {
         bundle.putSerializable("tripDetails", newTrip);
         intent.putExtras(bundle);
         startActivity(intent);
+
+        this.finish();
 
     }
 

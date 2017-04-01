@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">XPath</string>
-    <string name="title_activity_home">Home</string>
+    <string name="title_activity_home">Upcoming</string>
     <string name="title_activity_addTrip">Create Trip</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
