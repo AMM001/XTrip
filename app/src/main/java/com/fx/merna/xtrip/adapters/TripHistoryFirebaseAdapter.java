@@ -75,6 +75,9 @@ public class TripHistoryFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, Hi
         String[] arrDate = DateParser.parseLongDateToStrings(model.getDate());
         holder.getYear().setText(arrDate[0] + " " + arrDate[1]);
 
+        if (model.getStatus().contains("Cancel"))
+            holder.getTripStatus().setVisibility(View.VISIBLE);
+
         holder.getImgSetting().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
