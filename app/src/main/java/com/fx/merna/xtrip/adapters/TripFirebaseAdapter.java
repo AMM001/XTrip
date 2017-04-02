@@ -49,7 +49,6 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
         this.activity = activity;
     }
 
-
     @Override
     protected void populateViewHolder(UpcomingViewHolder viewHolder, final Trip model, int position) {
 
@@ -137,6 +136,7 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
                 popup.show();
             }
         });
+
 
         holder.getStartTrip().setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)

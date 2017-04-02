@@ -2,6 +2,7 @@ package com.fx.merna.xtrip.views.activities;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
@@ -14,11 +15,14 @@ import android.support.v7.app.NotificationCompat;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fx.merna.xtrip.R;
+import com.fx.merna.xtrip.adapters.TripHistoryFirebaseAdapter;
+import com.fx.merna.xtrip.holders.UpcomingViewHolder;
 import com.fx.merna.xtrip.models.Trip;
 import com.fx.merna.xtrip.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,6 +37,9 @@ public class ReminderActivity extends Activity {
 
     TextView txtDialogTitle, txtMore;
     Button btnStart, btnLater, btnCancel;
+    View convertView;
+    Uri uri;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +88,7 @@ public class ReminderActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference myRef = database.getReference("trips").child(user.getUid())
+               /* DatabaseReference myRef = database.getReference("trips").child(user.getUid())
                         .child(trip.getId()).child("status");
                 myRef.setValue("Done");
 
@@ -89,12 +96,58 @@ public class ReminderActivity extends Activity {
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 intent.setPackage("com.google.android.apps.maps");
                 startActivity(intent);
-                finish();
+                finish();*/
+
+                //----------- change status to Done in DB  when start trip ----------
+
+                DatabaseReference myRef = database.getReference("trips").child(user.getUid())
+                        .child(trip.getId()).child("status");
+
+                DatabaseReference ref = database.getReference("trips").child(user.getUid())
+                        .child(trip.getId());
+
+                //Round Trip Handling
+                if (trip.getType().equals(Constants.roundTrip)) {
+                  //  UpcomingViewHolder holder=new UpcomingViewHolder(convertView);
+                    //  ImageView roundImg=holder.getTripStatus();
+                   // roundImg.setImageResource(R.drawable.roundtrip);
+                   // holder.setTripStatus(roundImg);
+                   // roundImg.setVisibility(View.VISIBLE);
+                    String newEndLat, newEndLong, newStartLat, newStartLong, newStartPoint, newEndPoint;
+                    newStartLat = trip.getEndLat();
+                    newEndLat = trip.getStartLat();
+                    newStartLong = trip.getEndLong();
+                    newEndLong = trip.getStartLong();
+                    newStartPoint = trip.getEndPoint();
+                    newEndPoint = trip.getStartPoint();
+
+                    trip.setStartLat(newStartLat);
+                    trip.setStartLong(newStartLong);
+                    trip.setStartPoint(newStartPoint);
+                    trip.setEndPoint(newEndPoint);
+                    trip.setEndLong(newEndLong);
+                    trip.setEndLat(newEndLat);
+                    trip.setType(Constants.onDirectionTrip);
+
+
+                    uri = Uri.parse("google.navigation:q=" + trip.getEndLat() + "," + trip.getEndLong() + "&mode=d");
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    intent.setPackage("com.google.android.apps.maps");
+                    startActivity(intent);
+                    ref.setValue(trip);
+
+
+                } else {
+                    myRef.setValue("Done");
+                    Uri uri = Uri.parse("google.navigation:q=" + trip.getEndLat() + "," + trip.getEndLong() + "&mode=d");
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }
 
             }
         });
 
-        btnLater.setOnClickListener(new View.OnClickListener() {
+       /* btnLater.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Notification code here
@@ -131,6 +184,77 @@ public class ReminderActivity extends Activity {
                 Toast.makeText(getApplicationContext(), " See Notification", Toast.LENGTH_LONG).show();
                 finish();
             }
+        });*/
+
+        btnLater.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PendingIntent pIntent;
+
+
+                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("trips").child(user.getUid())
+                        .child(trip.getId()).child("status");
+
+                DatabaseReference ref = database.getReference("trips").child(user.getUid())
+                        .child(trip.getId());
+                Intent intent=new Intent(Intent.ACTION_VIEW, uri);;
+
+                pIntent = PendingIntent.getActivity(ReminderActivity.this, (int) System.currentTimeMillis(), intent, 0);
+
+                // PendingIntent pCancel= PendingIntent.getActivity(ReminderActivity.this, (int) System.currentTimeMillis(), intent, 0);
+
+                Notification n  = new Notification.Builder(ReminderActivity.this)
+                        .setContentTitle(trip.getName())
+                        .setContentText("Would you like to start your trip now :) ?")
+                        .setSmallIcon(R.mipmap.alarm_clock).setAutoCancel(true)
+                        .setContentIntent(pIntent).build();
+                      //  .addAction(R.drawable.about_icon, "Cancel", pIntent).build();
+                        NotificationManager notificationManager =
+                        (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                Random random = new Random();
+                int m = random.nextInt(9999 - 1000) + 1000;
+
+                notificationManager.notify(m, n);
+
+                finish();
+                //Round Trip Handling
+                if (trip.getType().equals(Constants.roundTrip)) {
+                    String newEndLat, newEndLong, newStartLat, newStartLong, newStartPoint, newEndPoint;
+                    newStartLat = trip.getEndLat();
+                    newEndLat = trip.getStartLat();
+                    newStartLong = trip.getEndLong();
+                    newEndLong = trip.getStartLong();
+                    newStartPoint = trip.getEndPoint();
+                    newEndPoint = trip.getStartPoint();
+
+                    trip.setStartLat(newStartLat);
+                    trip.setStartLong(newStartLong);
+                    trip.setStartPoint(newStartPoint);
+                    trip.setEndPoint(newEndPoint);
+                    trip.setEndLong(newEndLong);
+                    trip.setEndLat(newEndLat);
+                    trip.setType(Constants.onDirectionTrip);
+                    uri = Uri.parse("google.navigation:q=" + trip.getEndLat() + "," + trip.getEndLong() + "&mode=d");
+                   // intent = new Intent(Intent.ACTION_VIEW, uri);
+                    intent.setPackage("com.google.android.apps.maps");
+                   // pIntent = PendingIntent.getActivity(ReminderActivity.this, (int) System.currentTimeMillis(), intent, 0);
+                    ref.setValue(trip);
+
+                } else {
+                    myRef.setValue("Done");
+                    uri = Uri.parse("google.navigation:q=" + trip.getEndLat() + "," + trip.getEndLong() + "&mode=d");
+                    //intent = new Intent(Intent.ACTION_VIEW, uri);
+                    intent.setPackage("com.google.android.apps.maps");
+                  //  pIntent = PendingIntent.getActivity(ReminderActivity.this, (int) System.currentTimeMillis(), intent, 0);
+                }
+
+                myRef.setValue("Upcoming");
+
+            }
+
         });
 
         btnCancel.setOnClickListener(new View.OnClickListener() {

@@ -72,7 +72,7 @@ public class ViewDetailsActivity extends AppCompatActivity {
         startTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+              /*  final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("trips").child(user.getUid())
                         .child(trip.getId()).child("status");
@@ -80,7 +80,55 @@ public class ViewDetailsActivity extends AppCompatActivity {
                 Uri uri = Uri.parse("google.navigation:q=" + trip.getEndLat() + "," + trip.getEndLong() + "&mode=d");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 intent.setPackage("com.google.android.apps.maps");
-                startActivity(intent);
+                startActivity(intent);*/
+
+                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("trips").child(user.getUid())
+                        .child(trip.getId()).child("status");
+
+                DatabaseReference ref = database.getReference("trips").child(user.getUid())
+                        .child(trip.getId());
+
+                //Round Trip Handling
+                if (trip.getType().equals(Constants.roundTrip)) {
+                    //  UpcomingViewHolder holder=new UpcomingViewHolder(convertView);
+                    //  ImageView roundImg=holder.getTripStatus();
+                    // roundImg.setImageResource(R.drawable.roundtrip);
+                    // holder.setTripStatus(roundImg);
+                    // roundImg.setVisibility(View.VISIBLE);
+                    String newEndLat, newEndLong, newStartLat, newStartLong, newStartPoint, newEndPoint;
+                    newStartLat = trip.getEndLat();
+                    newEndLat = trip.getStartLat();
+                    newStartLong = trip.getEndLong();
+                    newEndLong = trip.getStartLong();
+                    newStartPoint = trip.getEndPoint();
+                    newEndPoint = trip.getStartPoint();
+
+                    trip.setStartLat(newStartLat);
+                    trip.setStartLong(newStartLong);
+                    trip.setStartPoint(newStartPoint);
+                    trip.setEndPoint(newEndPoint);
+                    trip.setEndLong(newEndLong);
+                    trip.setEndLat(newEndLat);
+                    trip.setType(Constants.onDirectionTrip);
+
+
+                    Uri uri = Uri.parse("google.navigation:q=" + trip.getEndLat() + "," + trip.getEndLong() + "&mode=d");
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    intent.setPackage("com.google.android.apps.maps");
+                    startActivity(intent);
+                    ref.setValue(trip);
+
+
+                } else {
+                    myRef.setValue("Done");
+                    Uri uri = Uri.parse("google.navigation:q=" + trip.getEndLat() + "," + trip.getEndLong() + "&mode=d");
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    intent.setPackage("com.google.android.apps.maps");
+                    startActivity(intent);
+                }
+
             }
         });
 

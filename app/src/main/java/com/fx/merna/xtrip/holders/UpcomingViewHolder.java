@@ -22,7 +22,7 @@ public class UpcomingViewHolder extends RecyclerView.ViewHolder {
     private ImageView tripStatus;
 
 
-    UpcomingViewHolder(View itemView) {
+    public UpcomingViewHolder(View itemView) {
         super(itemView);
         convertView = itemView;
     }
@@ -67,6 +67,10 @@ public class UpcomingViewHolder extends RecyclerView.ViewHolder {
         if(imgSetting == null)
             imgSetting = (ImageView) convertView.findViewById(R.id.settings);
         return imgSetting;
+    }
+
+    public void setTripStatus(ImageView tripStatus) {
+        this.tripStatus = tripStatus;
     }
 
     public ImageView getTripStatus() {
