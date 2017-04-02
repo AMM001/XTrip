@@ -90,7 +90,7 @@ public class ReminderActivity extends Activity {
 
                /* DatabaseReference myRef = database.getReference("trips").child(user.getUid())
                         .child(trip.getId()).child("status");
-                myRef.setValue("Done");
+                myRef.setValue("#Done");
 
                 Uri uri = Uri.parse("google.navigation:q=" + trip.getEndLat() + "," + trip.getEndLong() + "&mode=d");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -161,7 +161,7 @@ public class ReminderActivity extends Activity {
 
                 DatabaseReference myRef = database.getReference("trips").child(user.getUid())
                         .child(trip.getId()).child("status");
-                myRef.setValue("Done");
+                myRef.setValue("#Done");
 
                 Uri uri = Uri.parse("google.navigation:q=" + trip.getEndLat() + "," + trip.getEndLong() + "&mode=d");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -260,6 +260,9 @@ public class ReminderActivity extends Activity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DatabaseReference myRef = database.getReference("trips").child(user.getUid())
+                        .child(trip.getId()).child("status");
+                myRef.setValue("#Cancel");
                 finish();
             }
         });

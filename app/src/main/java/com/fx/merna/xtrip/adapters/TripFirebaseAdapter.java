@@ -186,7 +186,7 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
 
 
                 } else {
-                    myRef.setValue("Done");
+                    myRef.setValue("#Done");
                     Uri uri = Uri.parse("google.navigation:q=" + model.getEndLat() + "," + model.getEndLong() + "&mode=d");
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     intent.setPackage("com.google.android.apps.maps");
@@ -210,7 +210,8 @@ public class TripFirebaseAdapter extends FirebaseRecyclerAdapter<Trip, UpcomingV
                 System.out.println("Details Act/////////////////////////////////////");
             }
         });
-    }
 
+
+    }
 
 }

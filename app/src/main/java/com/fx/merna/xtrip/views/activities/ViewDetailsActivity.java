@@ -45,7 +45,6 @@ public class ViewDetailsActivity extends AppCompatActivity {
     Trip trip;
     CheckBox check;
     Bundle bundleObject;
-    TextView statusView;
     ImageView typeView;
 
 
@@ -76,7 +75,7 @@ public class ViewDetailsActivity extends AppCompatActivity {
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("trips").child(user.getUid())
                         .child(trip.getId()).child("status");
-                myRef.setValue("Done");
+                myRef.setValue("#Done");
                 Uri uri = Uri.parse("google.navigation:q=" + trip.getEndLat() + "," + trip.getEndLong() + "&mode=d");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 intent.setPackage("com.google.android.apps.maps");
@@ -154,10 +153,10 @@ public class ViewDetailsActivity extends AppCompatActivity {
             toView.setText(trip.getEndPoint());
 
             if (trip.getType().equals(Constants.onDirectionTrip)) {
-                typeView.setImageResource(R.drawable.about_icon);
+                typeView.setVisibility(View.INVISIBLE);
 
             } else {
-                typeView.setImageResource(R.drawable.history_icon);
+                typeView.setVisibility(View.VISIBLE);
             }
 
             String date[] = DateParser.parseLongDateToStrings(trip.getDate());
@@ -175,8 +174,7 @@ public class ViewDetailsActivity extends AppCompatActivity {
 
                         DatabaseReference myRef = database.getReference("trips").child(user.getUid())
                                 .child(trip.getId()).child("status");
-                        myRef.setValue("Done");
-                        statusView.setText("Done");
+                        myRef.setValue("#Done");
                     }
                 }
             });

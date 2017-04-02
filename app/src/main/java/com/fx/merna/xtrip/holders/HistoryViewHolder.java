@@ -15,7 +15,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
     private View convertView;
 
-    private TextView title, year, from, to;
+    private TextView title, year, from, to, tripStatus;
     private ImageView viewDetails, startTrip, imgSetting;
 
 
@@ -64,6 +64,12 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
         if (imgSetting == null)
             imgSetting = (ImageView) convertView.findViewById(R.id.history_settings);
         return imgSetting;
+    }
+
+    public TextView getTripStatus() {
+        if (tripStatus == null)
+            tripStatus = (TextView) convertView.findViewById(R.id.past_trip_status);
+        return tripStatus;
     }
 }
 

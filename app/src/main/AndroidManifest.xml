@@ -66,6 +66,9 @@
         <activity
             android:name=".views.activities.ReminderActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
             android:theme="@style/AppTheme.Dialog"></activity>
 
         <receiver android:name=".utils.AlarmBroadcastReceiver"></receiver>

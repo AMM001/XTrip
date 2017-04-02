@@ -15,13 +15,31 @@
         android:layout_weight="6"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txtDate"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="21/3/2017 10:15AM"
-            android:textColor="#9E9E9E"
-            android:textSize="15sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="21/3/2017 10:15AM"
+                android:textColor="#9E9E9E"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/past_trip_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:drawableLeft="@drawable/exclam"
+                android:drawablePadding="5dp"
+                android:text="Cancelled"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/title"
