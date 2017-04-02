@@ -105,10 +105,10 @@ public class ViewDetailsActivity extends AppCompatActivity {
             toView.setText(trip.getEndPoint());
 
             if (trip.getType().equals(Constants.onDirectionTrip)) {
-                typeView.setImageResource(R.drawable.about_icon);
+                typeView.setVisibility(View.INVISIBLE);
 
             } else {
-                typeView.setImageResource(R.drawable.history_icon);
+                typeView.setVisibility(View.VISIBLE);
             }
 
             String date[] = DateParser.parseLongDateToStrings(trip.getDate());
